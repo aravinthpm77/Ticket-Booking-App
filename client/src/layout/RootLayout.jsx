@@ -1,7 +1,13 @@
-import React from 'react'
-const RootLayout=()=> {
+import React, { useEffect } from 'react';
+
+const RootLayout=({ children,className })=> {
+    useEffect(()=>{
+        window.scrollTo(0,0);
+    })
   return (
-    <div>RootLayout</div>
+    <div className={`w-full lg:px-24 md:px-16 sm:px-7 px-4 ${className}`}>
+        {children}
+    </div>
   )
 }
 
