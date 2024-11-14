@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { AuroraBackground } from "../../../components/ui/AuroraBg/aurora-background";
+import SearchBox from "./searchbox";
 const Hero =() =>{
     const varients ={
         hidden:{opacity :0 ,y:-800},
@@ -29,6 +30,7 @@ const Hero =() =>{
                     <button className="bg-slate-100/5 hover:bg-slate-100/10 duration-300 backdrop-blur-2xl  rounded-full w-fit text-white hover:text-slate-300 px-4 py-2">
                     Book Now
                     </button>
+                    <SearchBox/>
                 </motion.div>
             </AuroraBackground>
         </motion.div>
