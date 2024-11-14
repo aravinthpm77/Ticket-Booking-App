@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React from "react";
-import { motion } from "framer-motion";
+import { motion ,useScroll } from "framer-motion";
 import { AuroraBackground } from "../../../components/ui/AuroraBg/aurora-background";
 import SearchBox from "./searchbox";
 import { WobbleCard } from "../../../components/ui/Wobble-card/wobble-card";
@@ -8,10 +8,10 @@ import img1 from '../../../assets/1.jpg'
 import img2 from '../../../assets/2.jpg'
 const Hero =() =>{
     
-
     return(
         <motion.div>
-            <AuroraBackground>
+            <AuroraBackground 
+        >
                 <motion.div
                     initial={{ opacity: 0.0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}

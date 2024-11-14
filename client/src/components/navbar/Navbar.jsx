@@ -30,9 +30,6 @@ const Navbar =()=> {
     useEffect(()=>{
         const handleScroll = () =>{
             const currentScrollState=window.scrollY;
-
-           
-
             if (currentScrollState > scrollPosition && currentScrollState > 50 ){
                 setIsVisible(false);
             }
