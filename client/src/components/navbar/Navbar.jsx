@@ -51,9 +51,10 @@ const Navbar =()=> {
     },[scrollPosition]);
 
   return (
-    <nav className={`w-full h-[8ch] fixed top-0 left-0 lg:px-24 md:px-16  sm:px-7 px-4 backdrop-blur-2xl  transition-transform duration-300 z-50 
+    
+    <nav className={`w-full h-[8ch] fixed top-0 left-0 lg:px-24 md:px-16  sm:px-7 px-4 backdrop-blur-2xl  transition-transform ease-in-out duration-300 z-50 
     ${isVisible < 50  ? "transalte-y-0 " : "-translate-y-full"} 
-    ${scrollPosition > 150 ? "bg-neutral-500 ":"bg-neutral-100/5"} 
+    ${scrollPosition > 150 ? "bg-neutral-900/50 ":"bg-neutral-900"} 
     `}
     > 
 
@@ -82,7 +83,7 @@ const Navbar =()=> {
                 </ul>
 
                 <div className="flex items-center justify-center">
-                    <button className={`${open? "border-spacing-x-9 border-x-white":""}md:w-fit w-full md:px-5 px-6 md:py-2 py-3 5 bg-slate-800/70 hover:bg-slate-800/90  backdrop-blur-2xl  rounded-full  text-white hover:text-slate-200/90  ease-in-out duration-300`}>
+                    <button className={`md:w-fit w-full md:px-5 px-6 md:py-2 py-3 5 bg-slate-200/20 hover:bg-slate-200/30  backdrop-blur-2xl  rounded-full  text-white hover:text-slate-100  ease-in-out duration-300`}>
                         Sign In
                     </button>
                 </div>

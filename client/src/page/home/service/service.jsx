@@ -10,7 +10,7 @@ export function Service() {
     (<div className="w-full h-full py-20">
       <h2
         className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-neutral-800 dark:text-neutral-200 font-sans">
-        Get to know your iSad.
+        Get to know about Service.
       </h2>
       <Carousel items={cards} />
     </div>)
@@ -19,7 +19,7 @@ export function Service() {
 
 const DummyContent = () => {
   return (<>
-    {[...new Array(3).fill(1)].map((_, index) => {
+    {[...new Array(1).fill(1)].map((_, index) => {
       return (
         (<div
           key={"dummy-content" + index}
@@ -48,40 +48,40 @@ const DummyContent = () => {
 
 const data = [
   {
-    category: "Artificial Intelligence",
-    title: "You can do more with AI.",
-    src: "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=3556&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "On Timely Connections",
+    title: "Minimized delays for seamless travel.",
+    src: "https://images.pexels.com/photos/3796308/pexels-photo-3796308.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     content: <DummyContent />,
   },
   {
-    category: "Productivity",
-    title: "Enhance your productivity.",
-    src: "https://images.unsplash.com/photo-1531554694128-c4c6665f59c2?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "Affordable Ride Service",
+    title: "Low-cost fares for all passengers.",
+    src: "https://images.pexels.com/photos/20107508/pexels-photo-20107508/free-photo-of-woman-standing-in-bus.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     content: <DummyContent />,
   },
   {
-    category: "Product",
-    title: "Launching the new Apple Vision Pro.",
-    src: "https://images.unsplash.com/photo-1713869791518-a770879e60dc?q=80&w=2333&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "Eco-Friendly Transport",
+    title: "Introducing E-Buses for Reducing emissions.",
+    src: "https://images.pexels.com/photos/6686275/pexels-photo-6686275.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     content: <DummyContent />,
   },
 
   {
-    category: "Product",
-    title: "Maps for your iPhone 15 Pro Max.",
+    category: "Real-Time Tracking",
+    title: "Live updates on bus location.",
     src: "https://images.unsplash.com/photo-1599202860130-f600f4948364?q=80&w=2515&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     content: <DummyContent />,
   },
   {
-    category: "iOS",
-    title: "Photography just got better.",
-    src: "https://images.unsplash.com/photo-1602081957921-9137a5d6eaee?q=80&w=2793&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "Express Routes",
+    title: "Faster travel with limited stops.",
+    src: "https://images.pexels.com/photos/11787611/pexels-photo-11787611.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     content: <DummyContent />,
   },
   {
-    category: "Hiring",
-    title: "Hiring for a Staff Software Engineer",
-    src: "https://images.unsplash.com/photo-1511984804822-e16ba72f5848?q=80&w=2048&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    category: "Flexible Ticketing",
+    title: "Online booking and mobile payments.",
+    src: "https://images.pexels.com/photos/17786528/pexels-photo-17786528/free-photo-of-interior-of-an-empty-public-means-of-transport.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     content: <DummyContent />,
   },
 ];

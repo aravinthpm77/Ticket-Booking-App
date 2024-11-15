@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import React from "react";
-import { motion ,useScroll } from "framer-motion";
+import React,{useRef} from "react";
+import { motion ,useScroll, useTransform } from "framer-motion";
 import { AuroraBackground } from "../../../components/ui/AuroraBg/aurora-background";
 import SearchBox from "./searchbox";
 import { WobbleCard } from "../../../components/ui/Wobble-card/wobble-card";
@@ -8,10 +8,40 @@ import img1 from '../../../assets/1.jpg'
 import img2 from '../../../assets/2.jpg'
 const Hero =() =>{
     
+        const  containerRef = useRef(null);
+      
+        const { scrollYProgress } = useScroll({
+          target: containerRef,
+          offset: ["start end", "end start"], 
+        });
+        const scale = useTransform(scrollYProgress, [0.1, 1], [1.12, 0.85]);
+        const borderRadius = useTransform(scrollYProgress, [0, 1], ["-100px", "100px"]);
+        const yPosition = useTransform(scrollYProgress, [0, 1, 2], [0, 0, -100]); // Vertical parallax effect
+
     return(
-        <motion.div>
+        <motion.div ref={containerRef}>
+            <motion.div
+            style={{
+                scale,
+                borderRadius,
+                overflow: "hidden" ,
+                y: yPosition,
+            }}
+            transition={{
+              type: "spring", // Smooth spring effect
+              stiffness: 50, // Adjust for smoothness
+              damping: 20, // Adjust for slowing down
+            }}
+            className="w-full h-full flex items-center justify-center" 
+            >
             <AuroraBackground 
         >
+            <motion.div
+          style={{
+            scale,
+            // Apply scaling effect to AuroraBackground
+          }}>
+            
                 <motion.div
                     initial={{ opacity: 0.0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -22,7 +52,7 @@ const Hero =() =>{
                     }}
                     className="relative flex flex-col gap-4 items-center justify-center px-4"
                 >
-                    <div className="text-3xl md:text-7xl font-bold text-slate-300 dark:text-white text-center">
+                    <div className="text-3xl md:text-7xl font-bold text-slate-300 mt-6 dark:text-white text-center">
                     Now, Get more than just 
                     </div>
                     <div className="font-extralight text-base md:text-5xl text-slate-500 dark:text-neutral-200 py-4">
@@ -32,9 +62,9 @@ const Hero =() =>{
                     <SearchBox/>
 
 
-                    <div className=" grid grid-cols-1 lg:grid-cols-3 gap-4 ">
+                    <div className=" lg:grid grid-rows-1 lg:grid-cols-3 gap-4 hidden ">
                     <WobbleCard
-                        containerClassName="col-span-1 lg:col-span-2 h-full bg-pink-800 min-h-[500px] lg:min-h-[300px]"
+                        containerClassName="col-span-3 lg:col-span-2 h-full bg-pink-800 min-h-[500px] lg:min-h-[300px]"
                         className=""
                     >
                         <div className="max-w-xs">
@@ -74,7 +104,9 @@ const Hero =() =>{
                     
                     </div>
                 </motion.div>
+                </motion.div>
             </AuroraBackground>
+            </motion.div>
         </motion.div>
     )
 }
