@@ -50,12 +50,12 @@ const Hero =() =>{
                     duration: 0.8,
                     ease: "easeInOut",
                     }}
-                    className="relative flex flex-col gap-4 items-center justify-center px-4"
+                    className="relative flex flex-col gap-4 items-center justify-center px-16"
                 >
-                    <div className="text-3xl md:text-7xl font-bold text-slate-300 mt-6 dark:text-white text-center">
+                    <div className="text-4xl md:text-7xl font-bold text-slate-300 mt-20 dark:text-white text-center">
                     Now, Get more than just 
                     </div>
-                    <div className="font-extralight text-base md:text-5xl text-slate-500 dark:text-neutral-200 py-4">
+                    <div className="font-extralight  text-3xl md:text-5xl  text-slate-500 dark:text-neutral-200 pb-2">
                     bus tickets with us! 
                     </div>
                     
