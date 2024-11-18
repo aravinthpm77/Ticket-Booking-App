@@ -1,6 +1,7 @@
 import React from "react"
 import Hero from "./hero/hero"
 import { Service } from "./service/service"
+import { MovingCard } from "./cards/movingcards"
 const Home=()=> {
   return (
     <div className="min-h-screen w-full flex items-center justify-center flex-col">
@@ -8,6 +9,7 @@ const Home=()=> {
           
           <Hero/>
           <Service/>
+          <MovingCard/>
         </div>
         
     </div>
