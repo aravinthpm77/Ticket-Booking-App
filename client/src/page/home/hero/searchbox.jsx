@@ -30,7 +30,7 @@ const BusSearch = () => {
 
       {/* Reverse Button */}
       <button
-        className="bg-white border border-gray-300 w-12 h-12 justify-center items-center align-middle p-3 rounded-full absolute ml-[100px] md:ml-[170px] lg:ml-[270px] hover:bg-slate-200 duration-300"
+        className="bg-white border border-gray-300 w-12 h-12 justify-center items-center align-middle p-3 rounded-full absolute ml-[105px] md:ml-[175px] lg:ml-[280px] hover:bg-slate-200 duration-300"
         onClick={reverseCities}
       >
        <div className='scale-110'> <img width="20" height="20" src="https://img.icons8.com/material-sharp/24/sorting-arrows-horizontal.png" alt="sorting-arrows-horizontal"/></div>

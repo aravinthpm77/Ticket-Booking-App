@@ -19,7 +19,7 @@ const Hero =() =>{
         const yPosition = useTransform(scrollYProgress, [0, 1, 2], [0, 0, -100]); // Vertical parallax effect
 
     return(
-        <motion.div ref={containerRef}>
+        <motion.div ref={containerRef} className="w-full">
             <motion.div
             style={{
                 scale,
@@ -32,7 +32,7 @@ const Hero =() =>{
               stiffness: 50, // Adjust for smoothness
               damping: 20, // Adjust for slowing down
             }}
-            className="w-full h-full flex items-center justify-center" 
+            className="w-full   h-full flex flex-col items-center justify-center" 
             >
             <AuroraBackground 
         >
@@ -50,7 +50,7 @@ const Hero =() =>{
                     duration: 0.8,
                     ease: "easeInOut",
                     }}
-                    className="relative flex flex-col gap-4 items-center justify-center px-16"
+                    className="relative flex flex-col gap-4 items-center justify-center px-40"
                 >
                     <div className="text-4xl md:text-7xl font-bold text-slate-300 mt-20 dark:text-white text-center">
                     Now, Get more than just 
