@@ -184,7 +184,7 @@ return(
       </div>
     </div>
 
-    <p class="text-xs text-gray-500">&copy; 2024. GoBus. Designed by Aravinth PM.</p>
+    <p class="text-xs text-gray-500">&copy; 2025. GoBus. Designed by Aravinth PM.</p>
   </div>
 </footer>
 )

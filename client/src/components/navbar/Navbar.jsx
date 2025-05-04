@@ -11,7 +11,7 @@ const Navbar = () => {
 
   const navItems = [
     { label: "Home", link: "/" },
-    { label: "Book Now", link: "/book" },
+    { label: "Book Now", link: "/bus-ticket" },
     { label: "About", link: "/about" },
   ];
 
