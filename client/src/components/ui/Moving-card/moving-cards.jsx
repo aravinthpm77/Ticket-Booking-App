@@ -91,7 +91,7 @@ export const MovingCards = ({
                   "linear-gradient(180deg, var(--zinc-200), var(--zinc-100))"
               }}
               key={idx}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.95 }}
             >
               <blockquote>
