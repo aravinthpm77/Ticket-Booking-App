@@ -2,6 +2,9 @@ import React from 'react'
 import TopLayout from '../../layout/toppage/toppage'
 import busimg from '../../assets/bg-bus.jpg'
 import { motion } from 'framer-motion'
+import BusSearch from '../home/hero/searchbox'
+import Filter from './filter/filter'
+import SearchResult from './filter/searchResult'
 const Ticket = () => {
   return (
     <div className='w-full pb-12 space-y-12 '>
@@ -9,7 +12,7 @@ const Ticket = () => {
         bgImg={busimg}
         title={"Reserve your ticket"}
         />
-        <div className='sticky top-0 z-30 flex flex-col items-center justify-center w-full py-4 space-y-5 bg-neutral-0'>
+        <div className='sticky top-0 z-0 flex flex-col items-center justify-center w-full space-y-5 bg-neutral-0'>
           <motion.div
             initial={{ opacity: 0.0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -20,11 +23,18 @@ const Ticket = () => {
             }}
             className="text-3xl font-bold text-center text-neutral-700"
           >
-            <h2 className="" > Want to change the route? </h2>               
+            <h2 className="" > Want to change the route? </h2>   
+                   
           </motion.div>
+          <BusSearch className="z-50" />     
         </div>
-         
-        <div className="relative grid w-full h-auto grid-cols-4 gap-16" ></div>
+
+        <div className="absolute grid h-auto grid-cols-4 gap-16 px-[clamp(1rem,5vw,4rem)]">
+          <div className="col-span-1">
+            <Filter/>
+          </div>
+          <SearchResult className="col-span-3" />
+        </div>
     </div>
   )
 }

@@ -34,7 +34,7 @@ const toppage = ({bgImg, title , className}) => {
             }}
             className="relative flex flex-col items-center justify-center gap-4 px-40"
             >
-            <h2 className="-mt-40 text-4xl font-bold text-center md:text-6xl text-slate-300 dark:text-white" > {title} </h2>               
+            <h2 className="-mt-40 text-4xl font-bold text-center md:text-6xl text-slate-200/90 dark:text-white" > {title} </h2>               
             </motion.div>
         </RootLayout>
     </motion.div>

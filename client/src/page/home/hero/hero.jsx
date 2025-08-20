@@ -32,7 +32,7 @@ const Hero =() =>{
               stiffness: 50, // Adjust for smoothness
               damping: 20, // Adjust for slowing down
             }}
-            className="w-full   h-full flex flex-col items-center justify-center" 
+            className="flex flex-col items-center justify-center w-full h-full" 
             >
             <AuroraBackground 
         >
@@ -50,19 +50,19 @@ const Hero =() =>{
                     duration: 0.8,
                     ease: "easeInOut",
                     }}
-                    className="relative flex flex-col gap-4 items-center justify-center px-40"
+                    className="relative flex flex-col items-center justify-center gap-4 px-40"
                 >
-                    <div className="text-4xl md:text-7xl font-bold text-slate-300 mt-20 dark:text-white text-center">
+                    <div className="mt-32 text-4xl font-bold text-center md:text-7xl text-slate-300 dark:text-white">
                     Now, Get more than just 
                     </div>
-                    <div className="font-extralight  text-3xl md:text-5xl  text-slate-500 dark:text-neutral-200 pb-2">
+                    <div className="pb-2 text-3xl font-extralight md:text-5xl text-slate-500 dark:text-neutral-200">
                     bus tickets with us! 
                     </div>
                     
                     <SearchBox/>
 
 
-                    <div className=" lg:grid grid-rows-1 lg:grid-cols-3 gap-4 hidden ">
+                    <div className="hidden grid-rows-1 gap-4 lg:grid lg:grid-cols-3">
                     <WobbleCard
                         containerClassName="col-span-3 lg:col-span-2 h-full bg-pink-800 min-h-[500px] lg:min-h-[300px]"
                         className=""
@@ -71,7 +71,7 @@ const Hero =() =>{
                         <h2 className="text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
                         Comfortable journeys, just a click away
                         </h2>
-                        <p className="mt-4 text-left  text-base/6 text-neutral-200">
+                        <p className="mt-4 text-left text-base/6 text-neutral-200">
                         Your next destination is closer than you think.
                         Get your seat and travel with ease!
                         </p>
