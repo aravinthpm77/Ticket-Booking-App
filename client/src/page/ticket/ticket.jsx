@@ -4,7 +4,7 @@ import busimg from '../../assets/bg-bus.jpg'
 import { motion } from 'framer-motion'
 import BusSearch from '../home/hero/searchbox'
 import Filter from './filter/filter'
-import SearchResult from './filter/searchResult'
+import SearchResult from './searchResult'
 const Ticket = () => {
   return (
     <div className='w-full pb-12 space-y-12 '>
@@ -23,7 +23,7 @@ const Ticket = () => {
             }}
             className="text-3xl font-bold text-center text-neutral-700"
           >
-            <h2 className="" > Want to change the route? </h2>   
+            <h2 className="" > Want to book the route? </h2>   
                    
           </motion.div>
           <BusSearch className="z-50" />     
