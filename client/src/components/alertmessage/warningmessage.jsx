@@ -20,7 +20,7 @@ const WarningMessage = ({ message }) => {
                         duration: 1,
                         ease: "easeInOut",
                     }}
-                    className="absolute right-0 z-50 flex items-center justify-center gap-10 p-4 -my-20 text-sm text-yellow-600 bg-yellow-100 shadow-lg mx-80 w-fit rounded-xl"
+                    className="absolute left-0 right-0 z-50 flex items-center justify-center gap-10 p-4 -my-20 text-sm text-yellow-600 bg-yellow-100 shadow-lg mx-80 min-w-fit rounded-xl"
                     role="alert"
                 >
                     <span className="mx-auto">{message}</span>

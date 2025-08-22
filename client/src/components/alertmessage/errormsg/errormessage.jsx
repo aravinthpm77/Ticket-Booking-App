@@ -1,13 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaX } from 'react-icons/fa6'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const ErrorMessage = ({ message }) => {
-    const [isVisible, setIsVisible] = useState(true)
+    const [isVisible, setIsVisible] = useState(true);
+    const [countDown, setCountDown] = useState(9);
 
-    const handleClose = () => {
-        setIsVisible(false)
-    }
+    useEffect(()=>{
+        if(countDown > 0){
+            const timer = setTimeout(() => {
+                setCountDown(prev=>prev-1);
+            },900
+        );
+        return () => clearTimeout(timer);
+
+        }else{
+            setIsVisible(false);
+            
+        }
+    },[countDown]);
+
+    if(!isVisible) return null;
 
     return (
         <AnimatePresence>
@@ -15,22 +28,21 @@ const ErrorMessage = ({ message }) => {
                 <motion.div
                     initial={{ opacity: 0.0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 50 }}
+                    exit={{ opacity: 1, y: 50 }}
                     transition={{
                         duration: 1,
                         ease: "easeInOut",
                     }}
-                    className="absolute right-0 z-50 flex items-center justify-center gap-10 p-4 -my-20 text-sm text-red-600 bg-red-400 shadow-lg mx-80 w-fit rounded-xl"
+                    className="fixed z-50 flex items-center justify-center gap-10 p-4 text-sm text-red-100 shadow-lg right-10 top-20 bg-red-500/90 w-fit rounded-xl"
                     role="alert"
                 >
                     <span className="mx-auto">{message}</span>
-                    <button
-                        onClick={handleClose}
-                        className="text-red-600 right-4 hover:text-red-800"
-                        aria-label="Close"
+                    <span
+                        
+                        className="text-white right-4"
                     >
-                        <FaX className="w-3 h-3" />
-                    </button>
+                        {countDown}
+                    </span>
                 </motion.div>
             )}
         </AnimatePresence>

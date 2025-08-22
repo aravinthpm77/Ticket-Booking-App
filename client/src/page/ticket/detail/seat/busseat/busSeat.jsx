@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { PiSteeringWheelBold } from 'react-icons/pi'
 import busSeatData from '../../../../../constants/busseat/busSeatData'
 import { Link } from 'react-router-dom'
+import ErrorMessage from '../../../../../components/alertmessage/errormsg/errormessage'
 
 const BusSeat = () => {
   const [selectedSeats, setSelectedSeats] = useState([])
@@ -245,6 +246,7 @@ const BusSeat = () => {
         </div>
         
       </div>
+      {showError && <ErrorMessage message={"You can't select more than 6 seats"} />}
     </div>
   )
 }
