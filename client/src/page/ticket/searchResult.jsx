@@ -15,7 +15,7 @@ const SearchResult = () => {
                                     totalSeats: 40,
                                     price:"850",
                                     TravelsName:"KMRL Travels",
-                                    type:"NON AC Sleeper",
+                                    type:"NON AC Seater",
                                     facility:['Tracking','Bed Sheet','Water Bottle','Pillow','Reading Lamp','CCTV']
                                 },{   id:2,
                                     from: "Hosur",
@@ -27,7 +27,7 @@ const SearchResult = () => {
                                     totalSeats: 40,
                                     price:"850",
                                     TravelsName:"KMRL Travels",
-                                    type:"NON AC Sleeper",
+                                    type:"NON AC Seater",
                                     facility:['Tracking','Bed Sheet','Water Bottle','Pillow','Reading Lamp','CCTV']
                                 }]}  />
         </div>

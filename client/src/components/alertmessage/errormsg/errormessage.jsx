@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { FaX } from 'react-icons/fa6'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const WarningMessage = ({ message }) => {
+const ErrorMessage = ({ message }) => {
     const [isVisible, setIsVisible] = useState(true)
 
     const handleClose = () => {
@@ -20,7 +20,7 @@ const WarningMessage = ({ message }) => {
                         duration: 1,
                         ease: "easeInOut",
                     }}
-                    className="absolute right-0 z-50 flex items-center justify-center gap-10 p-4 -my-20 text-sm text-yellow-600 bg-yellow-100 shadow-lg mx-80 w-fit rounded-xl"
+                    className="absolute right-0 z-50 flex items-center justify-center gap-10 p-4 -my-20 text-sm text-red-600 bg-red-400 shadow-lg mx-80 w-fit rounded-xl"
                     role="alert"
                 >
                     <span className="mx-auto">{message}</span>
@@ -36,5 +36,4 @@ const WarningMessage = ({ message }) => {
         </AnimatePresence>
     )
 }
-
-export default WarningMessage
+export default ErrorMessage

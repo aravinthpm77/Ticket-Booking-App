@@ -5,11 +5,12 @@ import { motion } from 'framer-motion'
 import RootLayout from '../../../layout/RootLayout'
 import WarningMessage from '../../../components/alertmessage/warningmessage'
 import { Link } from 'react-router-dom'
+import BusSeat from './seat/busseat/busSeat'
 
 const Details = () => {
     const message   = (
         <>
-        One Individual only can book a ticket at a time. If you want to book another ticket, please <Link to="/support-team" className='font-medium text-yellow-700'>reach out to our support team.</Link>
+        One Individual can only book 6 tickets at a time. If you want to book more tickets, please <Link to="/support-team" className='font-medium text-yellow-700'>reach out to our support team.</Link>
         </>
     );
     
@@ -28,7 +29,7 @@ const Details = () => {
                 </div>
                 {/*Bus Details */}
                 <div className="flex flex-col items-center justify-center w-full gap-8 text-center">
-
+                    <BusSeat />
                 </div>
             </RootLayout>
 
