@@ -88,9 +88,7 @@ export const Carousel = ({
 
           <div
             className={cn(
-              "flex flex-row justify-start gap-8 ",
-              // remove max-w-4xl if you want the carousel to span the full width of its container
-              "max-w-7xl mx-auto"
+              "flex flex-row justify-start gap-8 mx-auto"
             )}>
             {items.map((item, index) => (
               <motion.div
@@ -115,15 +113,15 @@ export const Carousel = ({
             ))}
           </div>
         </div>
-        <div className="flex justify-end gap-2 mr-10">
+        <div className="flex justify-end gap-5 mr-10">
           <button
-            className="relative z-40 flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full disabled:opacity-50"
+            className="relative z-40 flex items-center justify-center bg-gray-100 rounded-full w-14 h-14 disabled:opacity-50"
             onClick={scrollLeft}
             disabled={!canScrollLeft}>
             <IconArrowNarrowLeft className="w-6 h-6 text-gray-500" />
           </button>
           <button
-            className="relative z-40 flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full disabled:opacity-50"
+            className="relative z-40 flex items-center justify-center bg-gray-100 rounded-full h-14 w-14 disabled:opacity-50"
             onClick={scrollRight}
             disabled={!canScrollRight}>
             <IconArrowNarrowRight className="w-6 h-6 text-gray-500" />
