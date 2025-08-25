@@ -109,13 +109,13 @@ const Navbar = () => {
               {user?.unsafeMetadata?.role === "operator" && (
                 <Link
                   to="/operator/dashboard"
-                  className="w-full px-6 py-3 text-center text-white duration-300 ease-in-out bg-green-600 rounded-full md:w-fit md:px-5 md:py-2 hover:bg-green-700 backdrop-blur-2xl hover:text-white"
+                  className="w-full px-6 py-3 text-center text-white duration-300 ease-in-out bg-transparent rounded-full md:w-fit md:px-5 md:py-2 hover:text-white"
                 >
                   Dashboard
                 </Link>
               )}
               <SignOutButton
-                className="w-full px-6 py-3 text-center text-white duration-300 ease-in-out bg-red-600 rounded-full cursor-pointer md:w-fit md:px-5 md:py-2 hover:bg-red-700 backdrop-blur-2xl hover:text-white"
+                className="w-full px-6 py-3 text-center text-white duration-300 ease-in-out rounded-full cursor-pointer bg-neutral-600 md:w-fit md:px-5 md:py-2 hover:bg-neutral-700 backdrop-blur-2xl hover:text-white"
                 redirectUrl="/"
               />
               {/* User Profile button/modal */}
