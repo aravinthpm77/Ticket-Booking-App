@@ -1,185 +1,137 @@
-import React, { useState } from "react";
-import { useUser } from "@clerk/clerk-react";
+import React from "react";
+import { FaTimes } from "react-icons/fa";
 
-const initialForm = {
-  busName: "",
-  operatorName: "",
-  from: "",
-  to: "",
-  departureTime: "",
-  arrivalTime: "",
-  price: "",
-  totalSeats: "",
-  busType: "",
-};
-
-const CreateRoute = () => {
-  const { user } = useUser();
-  const [form, setForm] = useState(initialForm);
-  const [routes, setRoutes] = useState([]);
-  const [success, setSuccess] = useState("");
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setRoutes([...routes, { ...form, id: Date.now() }]);
-    setForm(initialForm);
-    setSuccess("Route created successfully!");
-    setTimeout(() => setSuccess(""), 2000);
-  };
-
+const RouteModal = ({ open, onClose, onSubmit, routeForm, onChange }) => {
+  if (!open) return null;
   return (
-    <div className="max-w-4xl px-4 py-12 mx-auto">
-      <h1 className="mb-6 text-3xl font-bold text-sky-700">Operator Dashboard</h1>
-      <p className="mb-8 text-neutral-600">Create and manage your bus travels and routes below.</p>
-
-      <form
-        onSubmit={handleSubmit}
-        className="p-6 mb-10 space-y-4 bg-white shadow-lg rounded-xl"
-      >
-        <h2 className="mb-2 text-xl font-semibold text-sky-600">Create New Bus Route</h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <input
-            className="p-2 border rounded-lg"
-            type="text"
-            name="busName"
-            placeholder="Bus Name"
-            value={form.busName}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="p-2 border rounded-lg"
-            type="text"
-            name="operatorName"
-            placeholder="Operator Name"
-            value={form.operatorName}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="p-2 border rounded-lg"
-            type="text"
-            name="from"
-            placeholder="From (City)"
-            value={form.from}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="p-2 border rounded-lg"
-            type="text"
-            name="to"
-            placeholder="To (City)"
-            value={form.to}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="p-2 border rounded-lg"
-            type="time"
-            name="departureTime"
-            placeholder="Departure Time"
-            value={form.departureTime}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="p-2 border rounded-lg"
-            type="time"
-            name="arrivalTime"
-            placeholder="Arrival Time"
-            value={form.arrivalTime}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="p-2 border rounded-lg"
-            type="number"
-            name="price"
-            placeholder="Ticket Price (₹)"
-            value={form.price}
-            onChange={handleChange}
-            min={0}
-            required
-          />
-          <input
-            className="p-2 border rounded-lg"
-            type="number"
-            name="totalSeats"
-            placeholder="Total Seats"
-            value={form.totalSeats}
-            onChange={handleChange}
-            min={1}
-            required
-          />
-          <select
-            className="p-2 border rounded-lg md:col-span-2"
-            name="busType"
-            value={form.busType}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select Bus Type</option>
-            <option value="AC">AC</option>
-            <option value="Non-AC">Non-AC</option>
-            <option value="Sleeper">Sleeper</option>
-            <option value="Seater">Seater</option>
-          </select>
-        </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center transition-all bg-black/50 backdrop-blur-sm">
+      <div className="relative w-full max-w-xl p-8 bg-white border border-gray-100 shadow-2xl rounded-2xl animate-fade-in">
+        {/* Close Button */}
         <button
-          type="submit"
-          className="w-full py-2 font-semibold text-white transition rounded-lg bg-sky-600 hover:bg-sky-700"
+          onClick={onClose}
+          className="absolute text-lg text-red-500 transition top-4 right-4 hover:text-red-600"
+          aria-label="Close"
         >
-          Create Route
+          <FaTimes />
         </button>
-        {success && <div className="text-center text-green-600">{success}</div>}
-      </form>
-
-      <div>
-        <h2 className="mb-4 text-xl font-semibold text-sky-600">Your Created Routes</h2>
-        {routes.length === 0 ? (
-          <p className="text-neutral-500">No routes created yet.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white shadow rounded-xl">
-              <thead>
-                <tr className="bg-sky-100 text-sky-700">
-                  <th className="px-4 py-2">Bus Name</th>
-                  <th className="px-4 py-2">Operator</th>
-                  <th className="px-4 py-2">From</th>
-                  <th className="px-4 py-2">To</th>
-                  <th className="px-4 py-2">Departure</th>
-                  <th className="px-4 py-2">Arrival</th>
-                  <th className="px-4 py-2">Type</th>
-                  <th className="px-4 py-2">Seats</th>
-                  <th className="px-4 py-2">Price (₹)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {routes.map((route) => (
-                  <tr key={route.id} className="text-center border-t">
-                    <td className="px-4 py-2">{route.busName}</td>
-                    <td className="px-4 py-2">{route.operatorName}</td>
-                    <td className="px-4 py-2">{route.from}</td>
-                    <td className="px-4 py-2">{route.to}</td>
-                    <td className="px-4 py-2">{route.departureTime}</td>
-                    <td className="px-4 py-2">{route.arrivalTime}</td>
-                    <td className="px-4 py-2">{route.busType}</td>
-                    <td className="px-4 py-2">{route.totalSeats}</td>
-                    <td className="px-4 py-2">{route.price}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <h3 className="mb-6 text-2xl font-bold text-center text-sky-700">
+          Add New Route
+        </h3>
+        <form onSubmit={onSubmit} className="space-y-6">
+          {/* From/To */}
+          <div>
+            <div className="mb-2 text-sm font-semibold text-gray-600">Route</div>
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="text"
+                name="from"
+                placeholder="From"
+                value={routeForm.from}
+                onChange={onChange}
+                className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
+                required
+              />
+              <input
+                type="text"
+                name="to"
+                placeholder="To"
+                value={routeForm.to}
+                onChange={onChange}
+                className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
+                required
+              />
+            </div>
           </div>
-        )}
+          {/* Departure/Arrival */}
+          <div>
+            <div className="mb-2 text-sm font-semibold text-gray-600">Departure & Arrival</div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block mb-1 text-xs text-gray-500">Departure Date</label>
+                <input
+                  type="date"
+                  name="depDate"
+                  value={routeForm.depDate || ""}
+                  onChange={onChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
+                  required
+                />
+                <label className="block mt-2 mb-1 text-xs text-gray-500">Departure Time</label>
+                <input
+                  type="time"
+                  name="depTime"
+                  value={routeForm.depTime || ""}
+                  onChange={onChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-xs text-gray-500">Arrival Date</label>
+                <input
+                  type="date"
+                  name="arrDate"
+                  value={routeForm.arrDate || ""}
+                  onChange={onChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
+                  required
+                />
+                <label className="block mt-2 mb-1 text-xs text-gray-500">Arrival Time</label>
+                <input
+                  type="time"
+                  name="arrTime"
+                  value={routeForm.arrTime || ""}
+                  onChange={onChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          {/* Price */}
+          <div>
+            <div className="mb-2 text-sm font-semibold text-gray-600">Price</div>
+            <input
+              type="number"
+              name="price"
+              placeholder="Price"
+              value={routeForm.price}
+              onChange={onChange}
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
+              required
+              min={0}
+            />
+          </div>
+          {/* Actions */}
+          <div className="flex justify-end gap-2 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-700 transition bg-gray-100 rounded-lg hover:bg-gray-200"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 font-semibold text-white transition rounded-lg shadow bg-sky-600 hover:bg-sky-700"
+            >
+              Add Route
+            </button>
+          </div>
+        </form>
       </div>
+      {/* Optional: Add a fade-in animation */}
+      <style>{`
+        .animate-fade-in {
+          animation: fadeInModal 0.25s cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes fadeInModal {
+          from { opacity: 0; transform: translateY(40px) scale(0.98);}
+          to { opacity: 1; transform: translateY(0) scale(1);}
+        }
+      `}</style>
     </div>
   );
 };
 
-export default CreateRoute;
+export default RouteModal;
