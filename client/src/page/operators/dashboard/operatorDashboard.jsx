@@ -47,22 +47,29 @@ const OperatorDashboard = () => {
   const lastScrollY = useRef(0);
 
   useEffect(() => {
+    let ticking= false;
+
     const handleScroll = () => {
-      if (window.scrollY < 10) {
-        setShowTabsBar(true);
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        // Scroll up → show navbar
+        if (window.scrollY < lastScrollY.current) {
+          setShowTabsBar(true);
+        } 
+        // Scroll down → hide navbar
+        else {
+          setShowTabsBar(false);
+        }
+
         lastScrollY.current = window.scrollY;
-        return;
-      }
-      if (window.scrollY > lastScrollY.current) {
-        setShowTabsBar(false); // scrolling down
-      } else {
-        setShowTabsBar(true); // scrolling up
-      }
-      lastScrollY.current = window.scrollY;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   // Handlers for bus and route creation
   const handleBusChange = (e) => setBusForm({ ...busForm, [e.target.name]: e.target.value });
@@ -92,13 +99,13 @@ const OperatorDashboard = () => {
 
       {/* Fixed Top Tabs Bar */}
       <nav
-        className={`fixed top-24 left-0 right-0 flex items-center justify-center h-24 w-full z-30 bg-white border-b shadow transition-transform duration-300 ${
-          showTabsBar ? "translate-y-0" : "-translate-y-full"
-        }`}
+        className={`fixed top-24 left-0 right-0 flex items-center justify-center h-24 w-full z-30 bg-black/10 backdrop-blur-md   border-b shadow-lg transition-all duration-500 ease-in-out transform ${
+    showTabsBar ? "translate-y-2 border-b-slate-500" : "-translate-y-full border-b-slate-300"
+  }`}
         
       >
         <div className="flex items-center justify-between px-6 py-2 mx-auto max-w-7xl">
-          <span className="mr-8 text-xl font-bold text-sky-700">Operator Dashboard</span>
+          <span className={`mr-8 text-xl font-bold ${showTabsBar ? "text-sky-300" : "text-sky-600"}`}>Operator Dashboard</span>
           <div className="flex gap-2">
             {DASHBOARD_TABS.map((tab) => (
               <button
