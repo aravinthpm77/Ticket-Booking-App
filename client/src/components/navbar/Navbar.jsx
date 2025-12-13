@@ -109,7 +109,7 @@ const Navbar = () => {
               {user?.unsafeMetadata?.role === "operator" && (
                 <Link
                   to="/operator/dashboard"
-                  className="w-full px-6 py-3 text-center text-white duration-300 ease-in-out bg-transparent rounded-full md:w-fit md:px-5 md:py-2 hover:text-white"
+                  className="w-full px-6 py-3 text-center text-white duration-300 ease-in-out bg-transparent rounded-full md:w-fit md:px-6 md:py-3 hover:text-white"
                 >
                   Dashboard
                 </Link>

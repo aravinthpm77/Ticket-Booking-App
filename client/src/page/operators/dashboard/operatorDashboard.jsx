@@ -6,7 +6,7 @@ import Toppage from "../../../layout/toppage/toppage";
 import img from "../../../assets/bg-seat.avif";
 import BusModal from "./createBus";
 import RouteModal from "./createRoute";
-
+import Footer from "../../../components/footer/footer";
 const DASHBOARD_TABS = [
   { label: "Dashboard", icon: <FaTachometerAlt />, key: "dashboard" },
   { label: "Buses", icon: <FaBus />, key: "buses" },
@@ -91,43 +91,30 @@ const OperatorDashboard = () => {
   const handleProfileSave = () => setProfileEdit(false);
 
   return (
-    <div className="min-h-screen  bg-[#ffffff]">
-      {/* Top image/banner */}
-      <div className="-z-10">
-        <Toppage bgImg={img} />
-      </div>
-
-      {/* Fixed Top Tabs Bar */}
-      <nav
-        className={`fixed top-24 left-0 right-0 flex items-center justify-center h-24 w-full z-30 bg-black/10 backdrop-blur-md   border-b shadow-lg transition-all duration-500 ease-in-out transform ${
-    showTabsBar ? "translate-y-2 border-b-slate-500" : "-translate-y-full border-b-slate-200"
-  }`}
-        
-      >
-        <div className="flex items-center justify-between px-6 py-2 mx-auto max-w-7xl">
-          <span className={`mr-8 text-xl font-bold ${showTabsBar ? "text-sky-300" : "text-sky-800"}`}>Operator Dashboard</span>
-          <div className="flex gap-2">
-            {DASHBOARD_TABS.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`px-4 py-2 rounded-full text-base font-medium transition-all
-                  ${
-                    activeTab === tab.key
-                      ? "bg-sky-100 text-sky-700 font-semibold shadow"
-                      : "hover:bg-sky-50 text-gray-700"
-                  }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          
+    <div>
+    <div className="min-h-screen bg-[#f3fffe] flex">
+      {/* Sidebar Nav - 10% */}
+      <nav className="sticky pt-32 top-0 z-30 flex flex-col items-start justify-start basis-[18%] w-[10%] min-w-[10%] h-screen border-r shadow-lg backdrop-blur-md bg-black/10 px-4 py-6">
+        <span className="mb-4 text-xl font-bold text-gray-600">Operator Dashboard</span>
+        <div className="flex flex-col w-full gap-2">
+          {DASHBOARD_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`w-full text-left px-4 py-2 rounded-full text-base font-medium transition-all ${
+                activeTab === tab.key
+                  ? "bg-sky-200 text-sky-700 font-semibold shadow-sm"
+                  : "hover:bg-sky-100 text-gray-500 hover:text-gray-600"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className="min-h-screen p-6 mx-auto max-w-7xl ">
+      {/* Main Content - 90% */}
+      <main className="relative  pt-32 min-h-screen p-6 basis-[90%] w-[90%]">
         <AnimatePresence>
           {activeTab === "dashboard" && (
             <motion.div
@@ -135,32 +122,36 @@ const OperatorDashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h1 className="mb-6 text-3xl font-bold text-gray-800">Dashboard</h1>
+              <div className="flex justify-between mb-5">
+                <h1 className="text-3xl font-bold text-gray-800 ">Dashboard</h1>
+                <div className="text-lg text-gray-800">{profile.company}</div>
+              </div>
+              
               <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
-                <div className="flex flex-col items-center p-6 bg-white shadow rounded-xl">
-                  <FaBus className="mb-2 text-2xl text-sky-500" />
+                <div className="flex flex-col items-center p-6 bg-white rounded-sm shadow">
+                  <FaBus className="mb-2 text-2xl text-gray-700" />
                   <div className="text-gray-500">Total Buses</div>
                   <div className="text-2xl font-bold text-gray-800">{buses.length}</div>
                 </div>
-                <div className="flex flex-col items-center p-6 bg-white shadow rounded-xl">
-                  <FaRoute className="mb-2 text-2xl text-sky-500" />
+                <div className="flex flex-col items-center p-6 bg-white rounded-sm shadow">
+                  <FaRoute className="mb-2 text-2xl text-gray-700" />
                   <div className="text-gray-500">Total Routes</div>
                   <div className="text-2xl font-bold text-gray-800">{routes.length}</div>
                 </div>
-                <div className="flex flex-col items-center p-6 bg-white shadow rounded-xl">
-                  <span className="mb-2 text-2xl text-sky-500">₹</span>
+                <div className="flex flex-col items-center p-6 bg-white rounded-sm shadow">
+                  <span className="mb-2 text-2xl text-gray-700">₹</span>
                   <div className="text-gray-500">Revenue</div>
                   <div className="text-2xl font-bold text-gray-800">--</div>
                 </div>
-                <div className="flex flex-col items-center p-6 bg-white shadow rounded-xl">
-                  <FaUserCircle className="mb-2 text-2xl text-sky-500" />
+                <div className="flex flex-col items-center p-6 bg-white rounded-sm shadow">
+                  <FaUserCircle className="mb-2 text-2xl text-gray-700" />
                   <div className="text-gray-500">Operator</div>
                   <div className="text-lg font-semibold text-gray-800">{profile.name}</div>
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Recent Buses */}
-                <div className="p-6 bg-white shadow rounded-xl">
+                <div className="p-6 bg-white rounded-sm shadow">
                   <div className="mb-4 font-bold text-gray-700">Recent Buses</div>
                   <table className="min-w-full">
                     <thead>
@@ -182,7 +173,7 @@ const OperatorDashboard = () => {
                   </table>
                 </div>
                 {/* Recent Routes */}
-                <div className="p-6 bg-white shadow rounded-xl">
+                <div className="p-6 bg-white rounded-sm shadow">
                   <div className="mb-4 font-bold text-gray-700">Recent Routes</div>
                   <table className="min-w-full">
                     <thead>
@@ -361,6 +352,7 @@ const OperatorDashboard = () => {
               )}
             </motion.div>
           )}
+          
         </AnimatePresence>
 
         {/* Modals */}
@@ -379,6 +371,9 @@ const OperatorDashboard = () => {
           onChange={handleRouteChange}
         />
       </main>
+      
+    </div>
+    
     </div>
   );
 };
