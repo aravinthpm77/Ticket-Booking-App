@@ -17,6 +17,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import BusModal from "./createBus";
 import RouteModal from "./createRoute";
+import { UserProfile } from "@clerk/clerk-react";
 const DASHBOARD_TABS = [
   { label: "Dashboard", icon: <FaTachometerAlt />, key: "dashboard" },
   { label: "Buses", icon: <FaBus />, key: "buses" },
@@ -24,11 +25,14 @@ const DASHBOARD_TABS = [
   { label: "Profile", icon: <FaUserCircle />, key: "profile" },
 ];
 
+ 
+  
 const initialBus = { name: "", type: "", seats: "" };
 const initialRoute = { from: "", to: "", dep: "", arr: "", price: "" };
 
 const OperatorDashboard = () => {
   const { user } = useUser();
+  console.log(user,"Dashboard Profile");
   const [activeTab, setActiveTab] = useState("dashboard");
   const [buses, setBuses] = useState([
     { id: 1, name: "KMRL Express", type: "AC", seats: 40 },
@@ -100,6 +104,7 @@ const OperatorDashboard = () => {
   const handleProfileChange = (e) => setProfile({ ...profile, [e.target.name]: e.target.value });
   const handleProfileSave = () => setProfileEdit(false);
 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-blue-600">
       <div className="flex min-h-screen mx-auto overflow-hidden shadow-2xl rounded-3xl bg-white/95">
@@ -128,9 +133,11 @@ const OperatorDashboard = () => {
           </div>
           <div className="p-4 mt-10 bg-white shadow rounded-xl">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-indigo-600/20" />
+              <div className="w-10 h-10 rounded-full bg-indigo-600/20" >
+                <img src={user?.imageUrl} alt="Profile" className="object-cover w-full h-full rounded-full" />
+              </div>
               <div>
-                <div className="text-sm font-semibold">Sally Hawkins</div>
+                <div className="text-sm font-semibold">{user.firstName}</div>
                 <button className="px-2 py-1 mt-1 text-xs text-white bg-pink-500 rounded">UPGRADE</button>
               </div>
             </div>
