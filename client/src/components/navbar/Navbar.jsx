@@ -28,18 +28,27 @@ const Navbar = () => {
       const currentScrollPosition = window.scrollY;
 
       if (currentScrollPosition > scrollPosition && currentScrollPosition > 50) {
-        setIsVisible(false); // Hide navbar when scrolling down
+        setIsVisible(false); 
       } else {
-        setIsVisible(true); // Show navbar when scrolling up
+        setIsVisible(true);
       }
 
       setScrollPosition(currentScrollPosition);
     };
 
+    const handleResize = () => {
+      
+      if (window.innerWidth >= 768) {
+        setOpen(false);
+      }
+    };
+
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, [scrollPosition]);
 
@@ -50,7 +59,7 @@ const Navbar = () => {
          bg-neutral-900 lg:bg-neutral-900/80`}
     >
       <div className="flex items-center justify-between w-full h-full">
-        {/* Logo */}
+        
         <Link
           to="/"
           className="text-4xl font-bold duration-200 text-white/90 hover:text-white"
@@ -94,7 +103,7 @@ const Navbar = () => {
           </ul>
 
           {/* Sign-In / Logout Button and Operator Dashboard */}
-          <div className="flex items-center justify-center gap-x-2">
+          <div className="grid items-center justify-center mt-0 align-middle md:mt-1 md:flex md:gap-x-2 ">
             <SignedOut>
               <Link
                 to="login"
@@ -109,18 +118,19 @@ const Navbar = () => {
               {user?.unsafeMetadata?.role === "operator" && (
                 <Link
                   to="/operator/dashboard"
-                  className="w-full px-6 py-3 text-center text-white duration-300 ease-in-out bg-transparent rounded-full md:w-fit md:px-6 md:py-3 hover:text-white"
+                  className="w-full px-6 py-3 text-center text-white duration-300 ease-in-out bg-transparent rounded-full md:w-fit md:px-6 md:py-3 hover:text-white/70"
                 >
                   Dashboard
                 </Link>
               )}
               <SignOutButton
-                className="w-full px-6 py-3 text-center text-white duration-300 ease-in-out rounded-full cursor-pointer bg-neutral-600 md:w-fit md:px-5 md:py-2 hover:bg-neutral-700 backdrop-blur-2xl hover:text-white"
+                className="hidden w-full px-6 py-3 text-center text-white duration-300 ease-in-out rounded-full cursor-pointer md:block bg-neutral-600 md:w-fit md:px-5 md:py-2 hover:bg-neutral-700 backdrop-blur-2xl hover:text-white"
                 redirectUrl="/"
               />
               {/* User Profile button/modal */}
-              <div className="ml-2">
+              <div className="ml-12 md:ml-2">
                 <UserButton />
+                
               </div>
             </SignedIn>
           </div>

@@ -106,8 +106,8 @@ const OperatorDashboard = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-blue-600">
-      <div className="flex min-h-screen mx-auto overflow-hidden shadow-2xl rounded-3xl bg-white/95">
+    <div className="h-auto bg-gradient-to-br from-indigo-500 to-blue-600">
+      <div className="flex mx-auto shadow-2xl h-fit rounded-3xl bg-white/95">
         {/* Sidebar Nav - ~10% */}
         <nav className="basis-[10%] translate-y-28 min-w-[250px] border-r bg-white/70 backdrop-blur p-6">
           <div className="mb-6">
@@ -131,13 +131,13 @@ const OperatorDashboard = () => {
               </button>
             ))}
           </div>
-          <div className="p-4 mt-10 bg-white shadow rounded-xl">
+          <div className="p-4 mt-10 shadow-md bg-indigo-50 rounded-xl">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-indigo-600/20" >
                 <img src={user?.imageUrl} alt="Profile" className="object-cover w-full h-full rounded-full" />
               </div>
               <div>
-                <div className="text-sm font-semibold">{user.firstName}</div>
+                <div className="text-sm font-semibold uppercase">{user.firstName}</div>
                 <button className="px-2 py-1 mt-1 text-xs text-white bg-pink-500 rounded">UPGRADE</button>
               </div>
             </div>
