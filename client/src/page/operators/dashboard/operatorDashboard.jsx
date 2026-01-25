@@ -106,14 +106,12 @@ const OperatorDashboard = () => {
 
 
   return (
-    <div className="h-auto bg-gradient-to-br from-indigo-500 to-blue-600">
-      <div className="flex mx-auto shadow-2xl h-fit rounded-3xl bg-white/95">
+    <div className="h-screen bg-white">
+      <div className="flex h-screen mx-auto shadow-2xl bg-indigo-50 rounded-3xl">
         {/* Sidebar Nav - ~10% */}
-        <nav className="basis-[10%] translate-y-28 min-w-[250px] border-r bg-white/70 backdrop-blur p-6">
-          <div className="mb-6">
-            <div className="grid w-10 h-10 rounded-full bg-indigo-600/20 place-items-center">
-              <span className="font-bold text-indigo-700">O2O</span>
-            </div>
+        <nav className="basis-[10%] min-w-[250px] border-r bg-white backdrop-blur p-6 overflow-y-auto">
+          <div className="mb-16">
+            
             <span className="block mt-4 text-lg font-bold text-gray-700">Operator</span>
           </div>
           <div className="flex flex-col w-full gap-2 ">
@@ -137,7 +135,7 @@ const OperatorDashboard = () => {
                 <img src={user?.imageUrl} alt="Profile" className="object-cover w-full h-full rounded-full" />
               </div>
               <div>
-                <div className="text-sm font-semibold uppercase">{user.firstName}</div>
+                <div className="text-base font-semibold ">{user.firstName}</div>
                 <button className="px-2 py-1 mt-1 text-xs text-white bg-pink-500 rounded">UPGRADE</button>
               </div>
             </div>
@@ -145,7 +143,7 @@ const OperatorDashboard = () => {
         </nav>
 
         {/* Main Content - center (~65%) */}
-        <main className="basis-[65%] p-8 translate-y-28">
+        <main className="basis-[65%] p-8 overflow-y-auto mt-24">
         <AnimatePresence>
           {activeTab === "dashboard" && (
             <motion.div
@@ -165,16 +163,16 @@ const OperatorDashboard = () => {
                 {/* Stat cards */}
                 <div className="grid grid-cols-1 gap-6 mb-10 md:grid-cols-3">
                   <div className="p-6 text-white shadow rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600">
-                    <div className="text-sm opacity-90">Customers</div>
+                    <div className="text-sm opacity-90">Total Passengers</div>
                     <div className="mt-2 text-2xl font-semibold">54,235</div>
                   </div>
                   <div className="p-6 text-white shadow rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600">
-                    <div className="text-sm opacity-90">Income</div>
-                    <div className="mt-2 text-2xl font-semibold">$980,632</div>
+                    <div className="text-sm opacity-90">Total Revenue</div>
+                    <div className="mt-2 text-2xl font-semibold">₹ 980,632</div>
                   </div>
                   <div className="p-6 text-white shadow rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600">
-                    <div className="text-sm opacity-90">Products Sold</div>
-                    <div className="mt-2 text-2xl font-semibold">5,490</div>
+                    <div className="text-sm opacity-90">Tickets Sold</div>
+                    <div className="mt-2 text-2xl font-semibold">5,490</div>      
                   </div>
                 </div>
 
@@ -183,9 +181,9 @@ const OperatorDashboard = () => {
                 <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2">
                   <div className="p-6 bg-white shadow rounded-2xl">
                     <div className="text-base font-semibold text-gray-700">Data Analytics Overview</div>
-                    <p className="mt-2 text-sm text-gray-500">See how your account grow and how you can boost it.</p>
+                    <p className="mt-2 text-sm text-gray-500">Track your fleet performance, occupancy rate, and revenue trends.</p>
                     <div className="flex items-center justify-end mt-6">
-                      <div className="grid w-20 h-20 border-2 border-indigo-600 rounded-full place-items-center">
+                      <div className="grid w-20 h-20 duration-200 border-2 border-indigo-600 rounded-full cursor-pointer place-items-center hover:bg-indigo-50">
                         <button className="font-semibold text-indigo-700">START</button>
                       </div>
                     </div>
@@ -196,8 +194,8 @@ const OperatorDashboard = () => {
                       <div className="grid w-24 h-24 rounded-full bg-indigo-50 place-items-center">
                         <FaWallet className="text-2xl text-indigo-600" />
                       </div>
-                      <div className="mt-4 text-xl font-semibold text-gray-800">$29 p/m</div>
-                      <div className="text-sm text-gray-500">100% insurance for your goods</div>
+                      <div className="mt-4 text-xl font-semibold text-gray-800">₹29 / month</div>
+                      <div className="text-sm text-gray-500">Performance insights | Route revenue | Seat utilization</div>
                     </div>
                   </div>
                 </div>
@@ -205,15 +203,24 @@ const OperatorDashboard = () => {
                 {/* Finance Flow */}
                 <div className="p-6 mb-8 bg-white shadow rounded-2xl">
                   <div className="text-base font-semibold text-gray-700">Finance Flow</div>
-                  <div className="mt-2 text-sm text-gray-500">$2,530 <span className="ml-2">September 2021</span></div>
-                  <div className="flex items-end h-24 gap-2 mt-4">
-                    {[8,16,10,22,14,18,12,20,9,15].map((h, i) => (
-                      <div key={i} className="w-4 bg-indigo-200 rounded" style={{height: `${h * 3}px`}} />
+                  <div className="mt-2 text-sm text-gray-500">₹253,000 <span className="ml-2">Monthly Overview</span></div>
+                  <div className="flex items-end justify-start h-32 gap-6 mt-6">
+                    {[
+                      { week: "Week 1", amount: 52000, value: 52 },
+                      { week: "Week 2", amount: 61000, value: 61 },
+                      { week: "Week 3", amount: 74000, value: 74 },
+                      { week: "Week 4", amount: 66000, value: 66 },
+                    ].map((data, i) => (
+                      <div key={i} className="flex flex-col items-center flex-2">
+                        <div className="w-full rounded-lg bg-gradient-to-t from-indigo-500 to-indigo-400" style={{height: `${data.value * 0.8}px`}} />
+                        <div className="mt-2 text-xs font-semibold text-gray-700">{data.week}</div>
+                        <div className="mt-1 text-xs text-indigo-600">₹{(data.amount / 1000).toFixed(0)}k</div>
+                      </div>
                     ))}
-                  </div>
+                  </div>  
                 </div>
 
-                {/* Recent Orders */}
+                
                 <div className="p-6 bg-white shadow rounded-2xl">
                   <div className="flex items-center justify-between">
                     <div className="text-base font-semibold text-gray-700">Recent Orders</div>
@@ -221,8 +228,8 @@ const OperatorDashboard = () => {
                   </div>
                   <div className="mt-4 space-y-3">
                     {[
-                      {id: '#1235465', item: 'DJI Mavic Pro 2', date: 'Sep 16, 2021', price: '$42.00', status: 'Delivered'},
-                      {id: '#1235468', item: 'iPad Pro 2017 Model', date: 'Sep 15, 2021', price: '$932.00', status: 'Canceled'},
+                      {id: '#1235465', item: 'DJI Mavic Pro 2', date: 'Sep 16, 2021', price: '₹42.00', status: 'Delivered'},
+                      {id: '#1235468', item: 'iPad Pro 2017 Model', date: 'Sep 15, 2021', price: '₹932.00', status: 'Canceled'},
                     ].map((o) => (
                       <div key={o.id} className="grid grid-cols-5 text-sm text-gray-600">
                         <div>{o.id}</div>
@@ -410,18 +417,18 @@ const OperatorDashboard = () => {
         </main>
 
         {/* Right Summary Panel (~25%) */}
-        <aside className="basis-[25%] p-8 bg-white/80 border-l translate-y-28">
+        <aside className="basis-[25%] p-8 bg-white/80 border-l mt-24 overflow-y-auto rounded-tr-3xl rounded-br-3xl">
           <div className="text-2xl font-bold text-gray-800">Summary</div>
           {/* Balance */}
           <div className="p-5 mt-6 bg-white shadow rounded-2xl">
             <div className="text-sm text-gray-500">Your Balance</div>
             <div className="flex items-center justify-between mt-3">
-              <div className="text-3xl font-bold text-gray-800">$10 632.00</div>
+              <div className="text-3xl font-bold text-gray-800">₹ 10,632.00</div>
               <button className="grid w-8 h-8 text-white bg-pink-500 rounded-full place-items-center">+</button>
             </div>
             <div className="flex items-center gap-6 mt-3 text-sm">
-              <div className="flex items-center gap-2 text-emerald-600"><FaArrowUp /> $3,250.07</div>
-              <div className="flex items-center gap-2 text-red-500"><FaArrowDown /> $1,062.90</div>
+              <div className="flex items-center gap-2 text-emerald-600"><FaArrowUp /> ₹3,250.07</div>
+              <div className="flex items-center gap-2 text-red-500"><FaArrowDown /> ₹1,062.90</div>
             </div>
           </div>
 
@@ -436,21 +443,21 @@ const OperatorDashboard = () => {
                 <div className="flex items-center gap-3">
                   <div className="grid w-10 h-10 text-indigo-600 bg-indigo-100 rounded-xl place-items-center">💾</div>
                   <div>
-                    <div className="text-sm font-medium text-gray-700">Withdraw Earning</div>
+                    <div className="text-sm font-medium text-gray-700">Tickets Revenue</div>
                     <div className="text-xs text-gray-500">12:40 am</div>
                   </div>
                 </div>
-                <div className="text-sm font-semibold text-gray-700">$4,120</div>
+                <div className="text-sm font-semibold text-gray-700">₹4,120</div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="grid w-10 h-10 text-indigo-600 bg-indigo-100 rounded-xl place-items-center">🧾</div>
                   <div>
-                    <div className="text-sm font-medium text-gray-700">Paying Website tax</div>
+                    <div className="text-sm font-medium text-gray-700">Fuel Expense</div>
                     <div className="text-xs text-gray-500">10:20 am</div>
                   </div>
                 </div>
-                <div className="text-sm font-semibold text-red-500">- $230</div>
+                <div className="text-sm font-semibold text-red-500">- ₹230</div>
               </div>
             </div>
           </div>
