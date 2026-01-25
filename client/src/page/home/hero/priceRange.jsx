@@ -60,7 +60,7 @@ const PriceRangeSlider = ({
 
     // Get min and max values when their state changes
     useEffect(() => {
-        if (minVal != minValRef.current || maxVal != maxValRef.current) {
+        if (minVal !== minValRef.current || maxVal !== maxValRef.current) {
             onChange({ min: minVal, max: maxVal });
             minValRef.current = minVal;
             maxValRef.current = maxVal;
