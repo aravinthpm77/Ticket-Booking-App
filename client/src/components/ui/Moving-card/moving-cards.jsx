@@ -13,27 +13,6 @@ export const MovingCards = ({
   const scrollerRef = React.useRef(null);
   const [start, setStart] = useState(false);
 
-  useEffect(() => {
-    addAnimation();
-  }, []);
-
-  function addAnimation() {
-    if (containerRef.current && scrollerRef.current) {
-      const scrollerContent = Array.from(scrollerRef.current.children);
-
-      scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true);
-        if (scrollerRef.current) {
-          scrollerRef.current.appendChild(duplicatedItem);
-        }
-      });
-
-      getDirection();
-      getSpeed();
-      setStart(true);
-    }
-  }
-
   const getDirection = () => {
     if (containerRef.current) {
       if (direction === "left") {
@@ -55,6 +34,28 @@ export const MovingCards = ({
       }
     }
   };
+
+  function addAnimation() {
+    if (containerRef.current && scrollerRef.current) {
+      const scrollerContent = Array.from(scrollerRef.current.children);
+
+      scrollerContent.forEach((item) => {
+        const duplicatedItem = item.cloneNode(true);
+        if (scrollerRef.current) {
+          scrollerRef.current.appendChild(duplicatedItem);
+        }
+      });
+
+      getDirection();
+      getSpeed();
+      setStart(true);
+    }
+  }
+
+  useEffect(() => {
+    addAnimation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Variants for the scroll animation
   const scrollVariants = {
@@ -106,12 +107,12 @@ export const MovingCards = ({
                   </div>
                   <div className="grid grid-cols">
                     <span className="relative z-20 text-sm leading-[1.6] text-gray-800/70 font-normal">
-                      Starts from<br /> <p className="text-gray-800 font-bold">INR {item.price}</p>
+                      Starts from<br /> <p className="font-bold text-gray-800">INR {item.price}</p>
                     </span>
                   </div>
                 </div>
 
-                <div className="relative z-20 mt-6 flex flex-row items-center">
+                <div className="relative z-20 flex flex-row items-center mt-6">
                   <span className="flex flex-col gap-1">
                     <span className="text-sm leading-[1.6] text-gray-950 font-bold">
                       {item.from}
@@ -145,7 +146,7 @@ export const MovingCards = ({
                     ))}
                   </span>
                 </div>
-                <button className="md:w-fit mt-2 w-full md:px-5 md:py-2 bg-gray-700 hover:bg-gray-800 backdrop-blur-2xl rounded-md text-white ease-in-out duration-300">
+                <button className="w-full mt-2 text-white duration-300 ease-in-out bg-gray-700 rounded-md md:w-fit md:px-5 md:py-2 hover:bg-gray-800 backdrop-blur-2xl">
                   View Seats
                 </button>
               </blockquote>

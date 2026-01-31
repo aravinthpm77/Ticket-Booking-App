@@ -1,7 +1,5 @@
-import React,{useEffect} from 'react'
 import TopLayout from '../../../layout/toppage/toppage'
 import busimg from '../../../assets/bg-bus.jpg'
-import { motion } from 'framer-motion'
 import RootLayout from '../../../layout/RootLayout'
 import WarningMessage from '../../../components/alertmessage/warningmessage'
 import { Link } from 'react-router-dom'

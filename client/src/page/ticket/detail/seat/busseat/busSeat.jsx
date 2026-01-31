@@ -10,7 +10,6 @@ const BusSeat = () => {
 
   const handleSeatClick = (seatId) => {
     const selectedSeat = busSeatData.find((seat) => seat.id === seatId)
-    const price = selectedSeat ? selectedSeat.price : null
     if (selectedSeat.status === 'booked') return
 
     setSelectedSeats((prevSelectedSeats) => {

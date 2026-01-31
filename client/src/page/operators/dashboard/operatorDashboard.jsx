@@ -17,7 +17,6 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import BusModal from "./createBus";
 import RouteModal from "./createRoute";
-import { UserProfile } from "@clerk/clerk-react";
 const DASHBOARD_TABS = [
   { label: "Dashboard", icon: <FaTachometerAlt />, key: "dashboard" },
   { label: "Buses", icon: <FaBus />, key: "buses" },
@@ -57,7 +56,7 @@ const OperatorDashboard = () => {
   const [showRouteModal, setShowRouteModal] = useState(false);
 
   // Hide top bar on scroll down, show on scroll up
-  const [showTabsBar, setShowTabsBar] = useState(true);
+  const [, setShowTabsBar] = useState(true);
   const lastScrollY = useRef(0);
 
   useEffect(() => {

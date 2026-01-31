@@ -2,7 +2,7 @@ import React from 'react'
 import PriceRangeSlider from '../../home/hero/priceRange';
 
 const Filter = (className) => {
-    const [rangeValues, setRangeValues] = React.useState({min: 0, max: 100});
+    const [, setRangeValues] = React.useState({min: 0, max: 100});
 
     const handleRangeChange = (values) => {
         setRangeValues({values});

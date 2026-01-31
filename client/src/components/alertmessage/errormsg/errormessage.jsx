@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { FaX } from 'react-icons/fa6'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const ErrorMessage = ({ message }) => {
