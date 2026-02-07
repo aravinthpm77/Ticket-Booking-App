@@ -23,7 +23,7 @@ return(
               fill="currentColor"
             />
           </svg>
-          <h1 className="text-start text-3xl font-semibold items-start">GoBus</h1>
+          <h1 className="items-start text-3xl font-semibold text-start">GoBus</h1>
         </div>
 
         <p class="mt-4 max-w-xs text-gray-500">
@@ -184,7 +184,7 @@ return(
       </div>
     </div>
 
-    <p class="text-xs text-gray-500">&copy; 2025. GoBus. Designed by Aravinth PM.</p>
+    <p class="text-xs text-gray-500">&copy; 2026. GoBus. Designed by Aravinth PM.</p>
   </div>
 </footer>
 )

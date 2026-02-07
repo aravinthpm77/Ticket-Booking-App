@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/clerk-react";
+import { useUser , useAuth} from "@clerk/clerk-react";
 import { useState, useEffect, useRef } from "react";
 import {
   FaBus,
@@ -17,6 +17,8 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import BusModal from "./createBus";
 import RouteModal from "./createRoute";
+import CreateTravels from "./createTravels";
+
 const DASHBOARD_TABS = [
   { label: "Dashboard", icon: <FaTachometerAlt />, key: "dashboard" },
   { label: "Buses", icon: <FaBus />, key: "buses" },
@@ -31,19 +33,32 @@ const initialRoute = { from: "", to: "", dep: "", arr: "", price: "" };
 
 const OperatorDashboard = () => {
   const { user } = useUser();
+  const { getToken } = useAuth();
   console.log(user,"Dashboard Profile");
+  
+  const [travels, setTravels] = useState(null);
+  const [loadingTravels, setLoadingTravels] = useState(true);
+
   const [activeTab, setActiveTab] = useState("dashboard");
+
+
   const [buses, setBuses] = useState([
     { id: 1, name: "KMRL Express", type: "AC", seats: 40 },
     { id: 2, name: "City Rider", type: "Non-AC", seats: 30 },
   ]);
+
+
   const [routes, setRoutes] = useState([
     { id: 1, from: "Hosur", to: "Chennai", dep: "23:45", arr: "5:45", price: 850 },
     { id: 2, from: "Bangalore", to: "Salem", dep: "21:00", arr: "2:00", price: 700 },
   ]);
+
+
   const [busForm, setBusForm] = useState(initialBus);
   const [routeForm, setRouteForm] = useState(initialRoute);
   const [profileEdit, setProfileEdit] = useState(false);
+
+
   const [profile, setProfile] = useState({
     name: user?.firstName || "",
     email: user?.primaryEmailAddress?.emailAddress || "",
@@ -78,11 +93,34 @@ const OperatorDashboard = () => {
         ticking = false;
       });
       ticking = true;
-    }
-  };
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
+    }};
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const fetchTravels = async () => {
+      try {
+        const token = await getToken();
+
+        const res = await fetch("http://localhost:5000/api/travels/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        setTravels(data); // null or object
+      } catch (err) {
+        console.error("Failed to fetch travels", err);
+      } finally {
+        setLoadingTravels(false);
+      }
+    };
+
+    if (user) fetchTravels();
+  }, [user]);
+
 
   // Handlers for bus and route creation
   const handleBusChange = (e) => setBusForm({ ...busForm, [e.target.name]: e.target.value });
@@ -102,6 +140,15 @@ const OperatorDashboard = () => {
   // Profile edit handlers
   const handleProfileChange = (e) => setProfile({ ...profile, [e.target.name]: e.target.value });
   const handleProfileSave = () => setProfileEdit(false);
+
+  if (loadingTravels) {
+    return <div className="grid h-screen place-items-center">Loading...</div>;
+  }
+
+  if (!travels) {
+    return <CreateTravels />;
+  }
+
 
 
   return (
