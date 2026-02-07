@@ -119,7 +119,7 @@ const OperatorDashboard = () => {
     };
 
     if (user) fetchTravels();
-  }, [user]);
+  }, [user, getToken]);
 
 
   // Handlers for bus and route creation

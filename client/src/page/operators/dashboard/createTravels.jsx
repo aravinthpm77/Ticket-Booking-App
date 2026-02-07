@@ -1,9 +1,8 @@
-import { useUser, useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { useState } from "react";
 const CreateTravels = () => {
-  const { user } = useUser();
 const { getToken } = useAuth();
   const [form, setForm] = useState({
     name: "",
