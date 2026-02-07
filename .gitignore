@@ -1,0 +1,3 @@
+server/.env
+DB_HOST=mysql-30cdbd2-aravinthsdb.j.aivencloud.com
+DB_PORT=28910 
