@@ -14,7 +14,9 @@ import {
   FaArrowUp,
   FaArrowDown,
 } from "react-icons/fa";
+
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
 import BusModal from "./createBus";
 import RouteModal from "./createRoute";
 import CreateTravels from "./createTravels";
@@ -28,42 +30,42 @@ const DASHBOARD_TABS = [
 
  
   
-const initialBus = { name: "", type: "", seats: "" };
-const initialRoute = { from: "", to: "", dep: "", arr: "", price: "" };
+const initialBus = {
+  bus_name: "",
+  bus_number: "",
+  bus_type: "seater",
+  layout: "2+2",
+  total_seats: "",
+};
 
 const OperatorDashboard = () => {
   const { user } = useUser();
   const { getToken } = useAuth();
-  console.log(user,"Dashboard Profile");
   
   const [travels, setTravels] = useState(null);
   const [loadingTravels, setLoadingTravels] = useState(true);
-
   const [activeTab, setActiveTab] = useState("dashboard");
 
 
-  const [buses, setBuses] = useState([
-    { id: 1, name: "KMRL Express", type: "AC", seats: 40 },
-    { id: 2, name: "City Rider", type: "Non-AC", seats: 30 },
-  ]);
+  const [routes, setRoutes] = useState([]);
+  const [, setLoadingRoutes] = useState(true);
+  const [editingRoute, setEditingRoute] = useState(null);
+
+  const [buses, setBuses] = useState([]);
 
 
-  const [routes, setRoutes] = useState([
-    { id: 1, from: "Hosur", to: "Chennai", dep: "23:45", arr: "5:45", price: 850 },
-    { id: 2, from: "Bangalore", to: "Salem", dep: "21:00", arr: "2:00", price: 700 },
-  ]);
+
 
 
   const [busForm, setBusForm] = useState(initialBus);
-  const [routeForm, setRouteForm] = useState(initialRoute);
   const [profileEdit, setProfileEdit] = useState(false);
 
 
   const [profile, setProfile] = useState({
-    name: user?.firstName || "",
-    email: user?.primaryEmailAddress?.emailAddress || "",
+    name: "",
+    email: "",
     phone: "",
-    company: "KMRL Travels",
+    address: "",
   });
 
   // Modal state
@@ -80,11 +82,10 @@ const OperatorDashboard = () => {
     const handleScroll = () => {
     if (!ticking) {
       window.requestAnimationFrame(() => {
-        // Scroll up → show navbar
+
         if (window.scrollY < lastScrollY.current) {
           setShowTabsBar(true);
         } 
-        // Scroll down → hide navbar
         else {
           setShowTabsBar(false);
         }
@@ -110,7 +111,7 @@ const OperatorDashboard = () => {
         });
 
         const data = await res.json();
-        setTravels(data); // null or object
+        setTravels(data);
       } catch (err) {
         console.error("Failed to fetch travels", err);
       } finally {
@@ -121,28 +122,281 @@ const OperatorDashboard = () => {
     if (user) fetchTravels();
   }, [user, getToken]);
 
+  useEffect(() => {
+    if (travels) {
+      setProfile({
+        name: travels.name || "",
+        email: travels.email || "",
+        phone: travels.phone || "",
+        address: travels.address || "",
+      });
+    }
+  }, [travels]);
 
-  // Handlers for bus and route creation
-  const handleBusChange = (e) => setBusForm({ ...busForm, [e.target.name]: e.target.value });
-  const handleRouteChange = (e) => setRouteForm({ ...routeForm, [e.target.name]: e.target.value });
+  useEffect(() => {
+    const fetchRoutes = async () => {
+      try {
+        const token = await getToken();
 
-  const handleBusSubmit = (e) => {
-    e.preventDefault();
-    setBuses([...buses, { ...busForm, id: Date.now() }]);
-    setBusForm(initialBus);
+        const res = await fetch("http://localhost:5000/api/routes/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        setRoutes(data || []);
+      } catch (err) {
+        console.error("Failed to fetch routes", err);
+        toast.error("Failed to load routes");
+      } finally {
+        setLoadingRoutes(false);
+      }
+    };
+
+    if (travels) fetchRoutes();
+  }, [travels, getToken]);
+
+  useEffect(() => {
+    const fetchBuses = async () => {
+      try {
+        const token = await getToken();
+
+        const res = await fetch("http://localhost:5000/api/buses", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        setBuses(data || []);
+      } catch (err) {
+        console.error("Failed to fetch buses", err);
+        toast.error("Failed to load buses");
+      } finally {
+        // No-op
+      }
+    };
+
+    if (travels) fetchBuses();
+  }, [travels, getToken]);
+
+
+
+  const handleBusChange = (e) => {
+    const { name, value } = e.target;
+    const layoutByType = {
+      sleeper: "1+1",
+      "semi-sleeper": "2+1",
+      seater: "2+2",
+    };
+    const seatsByLayout = {
+      "1+1": 30,
+      "2+1": 36,
+      "2+2": 40,
+    };
+
+    if (name === "bus_type") {
+      const suggestedLayout = layoutByType[value] || "2+2";
+      setBusForm((prev) => ({
+        ...prev,
+        bus_type: value,
+        layout: suggestedLayout,
+        total_seats: prev.total_seats || seatsByLayout[suggestedLayout] || "",
+      }));
+      return;
+    }
+
+    if (name === "layout") {
+      setBusForm((prev) => ({
+        ...prev,
+        layout: value,
+        total_seats: prev.total_seats || seatsByLayout[value] || "",
+      }));
+      return;
+    }
+
+    setBusForm((prev) => ({ ...prev, [name]: value }));
   };
-  const handleRouteSubmit = (e) => {
+
+  const fetchBuses = async () => {
+    try {
+      const token = await getToken();
+
+      const res = await fetch("http://localhost:5000/api/buses", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      setBuses(data || []);
+    } catch (err) {
+      console.error("Failed to fetch buses", err);
+      toast.error("Failed to load buses");
+    }
+  };
+
+  const handleBusSubmit = async (e) => {
     e.preventDefault();
-    setRoutes([...routes, { ...routeForm, id: Date.now() }]);
-    setRouteForm(initialRoute);
+    try {
+      const token = await getToken();
+
+      const res = await fetch("http://localhost:5000/api/buses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(busForm),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create bus");
+      }
+
+      toast.success("Bus added successfully");
+      setShowBusModal(false);
+      setBusForm(initialBus);
+      fetchBuses();
+    } catch (err) {
+      toast.error(err.message || "Failed to create bus");
+    }
+  };
+  const handleSaveRoute = async (data) => {
+    try {
+      const token = await getToken();
+      const isEdit = !!editingRoute;
+      const url = isEdit
+        ? `http://localhost:5000/api/routes/${editingRoute.id}`
+        : "http://localhost:5000/api/routes";
+      const method = isEdit ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      const contentType = res.headers.get("content-type") || "";
+      const isJson = contentType.includes("application/json");
+      const payload = isJson ? await res.json() : await res.text();
+
+      if (!res.ok) {
+        const message = isJson
+          ? payload?.message
+          : "Server returned an unexpected response";
+        throw new Error(message || "Failed to save route");
+      }
+
+      const saved = payload;
+
+      if (isEdit) {
+        setRoutes((prev) => prev.map((r) => (r.id === saved.id ? saved : r)));
+      } else {
+        setRoutes((prev) => [saved, ...prev]);
+      }
+
+      toast.success(isEdit ? "Route updated" : "Route created");
+      setEditingRoute(null);
+      setShowRouteModal(false);
+    } catch (err) {
+      console.error("Failed to save route", err);
+      toast.error(err.message || "Failed to save route");
+    }
+  };
+
+  const handleDeleteRoute = async (route) => {
+    if (!route?.id) return;
+
+    const confirmed = window.confirm(
+      `Delete route ${route.from_city} to ${route.to_city}?`
+    );
+    if (!confirmed) return;
+
+    try {
+      const token = await getToken();
+      const res = await fetch(`http://localhost:5000/api/routes/${route.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const contentType = res.headers.get("content-type") || "";
+      const isJson = contentType.includes("application/json");
+      const payload = isJson ? await res.json() : await res.text();
+
+      if (!res.ok) {
+        const message = isJson
+          ? payload?.message
+          : "Server returned an unexpected response";
+        throw new Error(message || "Failed to delete route");
+      }
+
+      setRoutes((prev) => prev.filter((r) => r.id !== route.id));
+      toast.success("Route deleted");
+    } catch (err) {
+      console.error("Failed to delete route", err);
+      toast.error(err.message || "Failed to delete route");
+    }
+  };
+
+  const getTimeLabel = (value) => {
+    if (!value) return "-";
+    const parts = String(value).includes("T")
+      ? String(value).split("T")
+      : String(value).split(" ");
+    const time = parts[1] || "";
+    return time ? time.slice(0, 5) : String(value);
+  };
+
+  const getBusTypeLabel = (value) => {
+    if (!value) return "-";
+    return String(value).replace(/-/g, " ");
   };
 
   // Profile edit handlers
   const handleProfileChange = (e) => setProfile({ ...profile, [e.target.name]: e.target.value });
-  const handleProfileSave = () => setProfileEdit(false);
+
+  const handleProfileSave = async () => {
+    try {
+      const token = await getToken();
+      const res = await fetch("http://localhost:5000/api/travels/me", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(profile),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to update profile");
+      }
+
+      const updated = await res.json();
+      setTravels(updated);
+      setProfile({
+        name: updated?.name || "",
+        email: updated?.email || "",
+        phone: updated?.phone || "",
+        address: updated?.address || "",
+      });
+      toast.success("Profile updated");
+      setProfileEdit(false);
+    } catch (err) {
+      console.error("Failed to update profile", err);
+      toast.error(err.message || "Failed to update profile");
+    }
+  };
 
   if (loadingTravels) {
-    return <div className="grid h-screen place-items-center">Loading...</div>;
+    return <div className="grid h-screen text-xl place-items-center">Loading...</div>;
   }
 
   if (!travels) {
@@ -297,39 +551,92 @@ const OperatorDashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Bus Management</h2>
-                <button
-                  onClick={() => setShowBusModal(true)}
-                  className="flex items-center gap-1 px-3 py-1 text-white rounded bg-sky-600"
-                >
-                  <FaPlus /> Add Bus
-                </button>
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">Bus Management</h2>
+                  <p className="mt-1 text-sm text-gray-500">Track fleet health, capacity, and availability.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 px-3 py-2 bg-white border shadow-sm rounded-xl">
+                    <FaSearch className="text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search buses"
+                      className="text-sm bg-transparent outline-none w-44"
+                    />
+                  </div>
+                  <button
+                    onClick={() => setShowBusModal(true)}
+                    className="flex items-center gap-2 px-4 py-2 text-white rounded-xl bg-sky-600 hover:bg-sky-700"
+                  >
+                    <FaPlus /> Add Bus
+                  </button>
+                </div>
               </div>
-              <div className="p-6 bg-white shadow rounded-xl">
-                <table className="min-w-full">
-                  <thead>
-                    <tr className="bg-sky-100 text-sky-700">
-                      <th className="px-4 py-2">Name</th>
-                      <th className="px-4 py-2">Type</th>
-                      <th className="px-4 py-2">Seats</th>
-                      <th className="px-4 py-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {buses.map((bus) => (
-                      <tr key={bus.id} className="text-center border-t">
-                        <td className="px-4 py-2">{bus.name}</td>
-                        <td className="px-4 py-2">{bus.type}</td>
-                        <td className="px-4 py-2">{bus.seats}</td>
-                        <td className="flex justify-center gap-2 px-4 py-2">
-                          <button className="text-blue-500 hover:text-blue-700"><FaEdit /></button>
-                          <button className="text-red-500 hover:text-red-700"><FaTrash /></button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+
+              <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+                <div className="p-4 bg-white shadow rounded-2xl">
+                  <div className="text-xs text-gray-500">Total Buses</div>
+                  <div className="mt-1 text-2xl font-semibold text-gray-800">{buses.length}</div>
+                </div>
+                <div className="p-4 bg-white shadow rounded-2xl">
+                  <div className="text-xs text-gray-500">Avg Seats</div>
+                  <div className="mt-1 text-2xl font-semibold text-gray-800">
+                    {Math.round(buses.reduce((sum, b) => sum + Number(b.total_seats || 0), 0) / (buses.length || 1))}
+                  </div>
+                </div>
+                <div className="p-4 text-white shadow rounded-2xl bg-gradient-to-r from-emerald-500 to-sky-500">
+                  <div className="text-xs opacity-90">Sleeper Fleet</div>
+                  <div className="mt-1 text-2xl font-semibold">
+                    {buses.filter((b) => String(b.bus_type).toLowerCase().includes("sleeper")).length} Active
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {buses.map((bus) => (
+                  <div key={bus.id} className="p-5 bg-white shadow rounded-2xl">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-lg font-semibold text-gray-800">{bus.bus_name}</div>
+                        <div className="mt-1 text-xs text-gray-500">{bus.bus_number}</div>
+                      </div>
+                      <span
+                        className={`px-3 py-1 text-xs rounded-full ${
+                          String(bus.bus_type).toLowerCase().includes("sleeper")
+                            ? "text-emerald-700 bg-emerald-100"
+                            : "text-amber-700 bg-amber-100"
+                        }`}
+                      >
+                        {getBusTypeLabel(bus.bus_type)}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 mt-4">
+                      <div className="p-3 rounded-xl bg-slate-50">
+                        <div className="text-xs text-gray-500">Layout</div>
+                        <div className="mt-1 text-sm font-semibold text-gray-800">{bus.layout}</div>
+                      </div>
+                      <div className="p-3 rounded-xl bg-slate-50">
+                        <div className="text-xs text-gray-500">Seats</div>
+                        <div className="mt-1 text-sm font-semibold text-gray-800">{bus.total_seats}</div>
+                      </div>
+                      <div className="p-3 rounded-xl bg-slate-50">
+                        <div className="text-xs text-gray-500">Type</div>
+                        <div className="mt-1 text-sm font-semibold text-gray-800">{getBusTypeLabel(bus.bus_type)}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 mt-5">
+                      <button className="px-4 py-2 text-blue-700 rounded-xl bg-blue-50 hover:bg-blue-100" aria-label="Edit bus">
+                        <FaEdit className="inline" />
+                        <span className="ml-2 text-sm">Edit</span>
+                      </button>
+                      <button className="px-4 py-2 text-red-700 rounded-xl bg-red-50 hover:bg-red-100" aria-label="Delete bus">
+                        <FaTrash className="inline" />
+                        <span className="ml-2 text-sm">Remove</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </motion.div>
           )}
@@ -341,43 +648,111 @@ const OperatorDashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="flex items-center justify-between max-w-full mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Route Management</h2>
-                <button
-                  onClick={() => setShowRouteModal(true)}
-                  className="flex items-center gap-1 px-3 py-1 text-white rounded bg-sky-600"
-                >
-                  <FaPlus /> Add Route
-                </button>
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">Route Management</h2>
+                  <p className="mt-1 text-sm text-gray-500">Manage schedules, fares, and timing at a glance.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 px-3 py-2 bg-white border shadow-sm rounded-xl">
+                    <FaSearch className="text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search routes"
+                      className="text-sm bg-transparent outline-none w-44"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      setEditingRoute(null);
+                      setShowRouteModal(true);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 text-white rounded-xl bg-sky-600 hover:bg-sky-700"
+                  >
+                    <FaPlus /> Add Route
+                  </button>
+                </div>
               </div>
-              <div className="p-6 bg-white shadow rounded-xl">
-                <table className="min-w-full">
-                  <thead>
-                    <tr className="bg-sky-100 text-sky-700">
-                      <th className="px-4 py-2">From</th>
-                      <th className="px-4 py-2">To</th>
-                      <th className="px-4 py-2">Dep</th>
-                      <th className="px-4 py-2">Arr</th>
-                      <th className="px-4 py-2">Price</th>
-                      <th className="px-4 py-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {routes.map((route) => (
-                      <tr key={route.id} className="text-center border-t">
-                        <td className="px-4 py-2">{route.from}</td>
-                        <td className="px-4 py-2">{route.to}</td>
-                        <td className="px-4 py-2">{route.dep}</td>
-                        <td className="px-4 py-2">{route.arr}</td>
-                        <td className="px-4 py-2">{route.price}</td>
-                        <td className="flex justify-center gap-2 px-4 py-2">
-                          <button className="text-blue-500 hover:text-blue-700"><FaEdit /></button>
-                          <button className="text-red-500 hover:text-red-700"><FaTrash /></button>
-                        </td>
+
+              <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+                <div className="p-4 bg-white shadow rounded-2xl">
+                  <div className="text-xs text-gray-500">Active Routes</div>
+                  <div className="mt-1 text-2xl font-semibold text-gray-800">{routes.length}</div>
+                </div>
+                <div className="p-4 bg-white shadow rounded-2xl">
+                  <div className="text-xs text-gray-500">Avg Fare</div>
+                  <div className="mt-1 text-2xl font-semibold text-gray-800">
+                    ₹{Math.round(routes.reduce((sum, r) => sum + Number(r.price || 0), 0) / (routes.length || 1))}
+                  </div>
+                </div>
+                <div className="p-4 text-white shadow rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500">
+                  <div className="text-xs opacity-90">Peak Window</div>
+                  <div className="mt-1 text-2xl font-semibold">20:00 - 23:59</div>
+                </div>
+              </div>
+
+              <div className="overflow-hidden bg-white shadow rounded-2xl">
+                <div className="flex items-center justify-between px-6 py-4 border-b">
+                  <div className="text-base font-semibold text-gray-700">All Routes</div>
+                  <div className="text-xs text-gray-400">Updated just now</div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-gray-500 bg-slate-50">
+                        <th className="px-6 py-3">From</th>
+                        <th className="px-6 py-3">To</th>
+                        <th className="px-6 py-3">Departure</th>
+                        <th className="px-6 py-3">Arrival</th>
+                        <th className="px-6 py-3">Fare</th>
+                        <th className="px-6 py-3">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {routes.map((route, index) => (
+                        <tr
+                          key={route.id}
+                          className={`border-t ${index % 2 === 0 ? "bg-white" : "bg-slate-50"}`}
+                        >
+                          <td className="px-6 py-4 font-medium text-gray-800">{route.from_city}</td>
+                          <td className="px-6 py-4 text-gray-700">{route.to_city}</td>
+                          <td className="px-6 py-4">
+                            <span className="px-2 py-1 text-xs rounded-lg text-sky-700 bg-sky-100">
+                              {getTimeLabel(route.departure_time)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="px-2 py-1 text-xs text-indigo-700 bg-indigo-100 rounded-lg">
+                              {getTimeLabel(route.arrival_time)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 font-semibold text-gray-800">₹{route.price}</td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <button
+                                className="p-2 text-blue-600 rounded-lg bg-blue-50 hover:bg-blue-100"
+                                aria-label="Edit route"
+                                onClick={() => {
+                                  setEditingRoute(route);
+                                  setShowRouteModal(true);
+                                }}
+                              >
+                                <FaEdit />
+                              </button>
+                              <button
+                                className="p-2 text-red-600 rounded-lg bg-red-50 hover:bg-red-100"
+                                aria-label="Delete route"
+                                onClick={() => handleDeleteRoute(route)}
+                              >
+                                <FaTrash />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </motion.div>
           )}
@@ -388,58 +763,139 @@ const OperatorDashboard = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="max-w-xl p-8 mx-auto bg-white shadow rounded-xl"
+              className="max-w-4xl p-6 mx-auto"
             >
-              <h2 className="mb-6 text-2xl font-bold text-gray-800">Operator Profile</h2>
-              <div className="flex items-center gap-4 mb-6">
-                <FaUserCircle className="text-5xl text-sky-500" />
-                <div>
-                  <div className="text-lg font-semibold">{profile.name}</div>
-                  <div className="text-gray-500">{profile.email}</div>
-                  <div className="text-gray-500">{profile.company}</div>
+              <div className="p-6 bg-white shadow rounded-2xl">
+                <div className="flex flex-wrap items-start justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className="grid w-16 h-16 rounded-2xl bg-sky-100 place-items-center">
+                      {user?.imageUrl ? (
+                        <img
+                          src={user.imageUrl}
+                          alt="Profile"
+                          className="object-cover w-full h-full rounded-2xl"
+                        />
+                      ) : (
+                        <FaUserCircle className="text-4xl text-sky-500" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-xl font-semibold text-gray-800">{profile.name}</div>
+                      <div className="text-sm text-gray-500">{profile.email}</div>
+                    </div>
+                  </div>
+                  {!profileEdit && (
+                    <button
+                      onClick={() => setProfileEdit(true)}
+                      className="px-4 py-2 text-white rounded-xl bg-sky-600 hover:bg-sky-700"
+                    >
+                      Edit Profile
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 mt-6 md:grid-cols-3">
+                  <div className="p-4 border rounded-2xl bg-slate-50">
+                    <div className="text-xs text-gray-500">Primary Email</div>
+                    <div className="mt-1 text-sm font-semibold text-gray-800">{profile.email || "-"}</div>
+                  </div>
+                  <div className="p-4 border rounded-2xl bg-slate-50">
+                    <div className="text-xs text-gray-500">Phone</div>
+                    <div className="mt-1 text-sm font-semibold text-gray-800">{profile.phone || "-"}</div>
+                  </div>
+                  <div className="p-4 border rounded-2xl bg-slate-50">
+                    <div className="text-xs text-gray-500">Address</div>
+                    <div className="mt-1 text-sm font-semibold text-gray-800">{profile.address || "-"}</div>
+                  </div>
+                </div>
+
+                <div className="mt-8">
+                  <div className="text-sm font-semibold text-gray-700">Profile Details</div>
+                  <div className="mt-4">
+                    {profileEdit ? (
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500">Travels Name</label>
+                          <input
+                            type="text"
+                            name="name"
+                            value={profile.name}
+                            onChange={handleProfileChange}
+                            className="w-full px-3 py-2 mt-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            placeholder="Name"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500">Email</label>
+                          <input
+                            type="email"
+                            name="email"
+                            value={profile.email}
+                            onChange={handleProfileChange}
+                            className="w-full px-3 py-2 mt-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            placeholder="Email"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500">Phone</label>
+                          <input
+                            type="text"
+                            name="phone"
+                            value={profile.phone}
+                            onChange={handleProfileChange}
+                            className="w-full px-3 py-2 mt-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            placeholder="Phone"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500">Address</label>
+                          <input
+                            type="text"
+                            name="address"
+                            value={profile.address}
+                            onChange={handleProfileChange}
+                            className="w-full px-3 py-2 mt-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            placeholder="Address"
+                          />
+                        </div>
+                        <div className="flex items-center gap-3 md:col-span-2">
+                          <button
+                            onClick={handleProfileSave}
+                            className="px-5 py-2 text-white rounded-xl bg-sky-600 hover:bg-sky-700"
+                          >
+                            Save Changes
+                          </button>
+                          <button
+                            onClick={() => setProfileEdit(false)}
+                            className="px-5 py-2 text-gray-700 border rounded-xl hover:bg-gray-50"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="p-4 border rounded-2xl">
+                          <div className="text-xs text-gray-500">Travels Name</div>
+                          <div className="mt-1 text-sm font-semibold text-gray-800">{profile.name || "-"}</div>
+                        </div>
+                        <div className="p-4 border rounded-2xl">
+                          <div className="text-xs text-gray-500">Email</div>
+                          <div className="mt-1 text-sm font-semibold text-gray-800">{profile.email || "-"}</div>
+                        </div>
+                        <div className="p-4 border rounded-2xl">
+                          <div className="text-xs text-gray-500">Phone</div>
+                          <div className="mt-1 text-sm font-semibold text-gray-800">{profile.phone || "-"}</div>
+                        </div>
+                        <div className="p-4 border rounded-2xl">
+                          <div className="text-xs text-gray-500">Address</div>
+                          <div className="mt-1 text-sm font-semibold text-gray-800">{profile.address || "-"}</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-              {profileEdit ? (
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    name="name"
-                    value={profile.name}
-                    onChange={handleProfileChange}
-                    className="w-full px-3 py-2 border rounded"
-                    placeholder="Name"
-                  />
-                  <input
-                    type="email"
-                    name="email"
-                    value={profile.email}
-                    onChange={handleProfileChange}
-                    className="w-full px-3 py-2 border rounded"
-                    placeholder="Email"
-                  />
-                  <input
-                    type="text"
-                    name="company"
-                    value={profile.company}
-                    onChange={handleProfileChange}
-                    className="w-full px-3 py-2 border rounded"
-                    placeholder="Company"
-                  />
-                  <button
-                    onClick={handleProfileSave}
-                    className="px-4 py-2 text-white rounded bg-sky-600"
-                  >
-                    Save
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setProfileEdit(true)}
-                  className="px-4 py-2 text-white rounded bg-sky-600"
-                >
-                  Edit Profile
-                </button>
-              )}
             </motion.div>
           )}
           
@@ -449,16 +905,18 @@ const OperatorDashboard = () => {
         <BusModal
           open={showBusModal}
           onClose={() => setShowBusModal(false)}
-          onSubmit={(e) => { handleBusSubmit(e); setShowBusModal(false); }}
+          onSubmit={handleBusSubmit}
           busForm={busForm}
           onChange={handleBusChange}
         />
         <RouteModal
           open={showRouteModal}
-          onClose={() => setShowRouteModal(false)}
-          onSubmit={(e) => { handleRouteSubmit(e); setShowRouteModal(false); }}
-          routeForm={routeForm}
-          onChange={handleRouteChange}
+          onClose={() => {
+            setShowRouteModal(false);
+            setEditingRoute(null);
+          }}
+          onSave={handleSaveRoute}
+          route={editingRoute}
         />
         </main>
 

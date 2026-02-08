@@ -1,121 +1,184 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
-const RouteModal = ({ open, onClose, onSubmit, routeForm, onChange }) => {
+const RouteModal = ({ open, onClose, onSave, route }) => {
+  const [form, setForm] = useState({
+    from_city: "",
+    to_city: "",
+    price: "",
+    depTime: "",
+    arrTime: "",
+  });
+
+  useEffect(() => {
+    if (!route) {
+      setForm({
+        from_city: "",
+        to_city: "",
+        price: "",
+        depTime: "",
+        arrTime: "",
+      });
+      return;
+    }
+
+    const splitDateTime = (value) => {
+      if (!value) return { date: "", time: "" };
+      const parts = String(value).includes("T")
+        ? String(value).split("T")
+        : String(value).split(" ");
+      const date = parts[0] || "";
+      const time = parts[1] ? parts[1].slice(0, 5) : "";
+      return { date, time };
+    };
+
+    const dep = splitDateTime(route.departure_time);
+    const arr = splitDateTime(route.arrival_time);
+
+    setForm({
+      from_city: route.from_city || "",
+      to_city: route.to_city || "",
+      price: route.price || "",
+      depTime: dep.time,
+      arrTime: arr.time,
+    });
+  }, [route]);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const today = new Date().toISOString().slice(0, 10);
+    const depDate = form.depDate || today;
+    const arrDate = form.arrDate || depDate;
+
+    const payload = {
+      from_city: form.from_city,
+      to_city: form.to_city,
+      departure_time: `${depDate} ${form.depTime}`.trim(),
+      arrival_time: `${arrDate} ${form.arrTime}`.trim(),
+      price: form.price,
+    };
+
+    onSave(payload);
+  };
+
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center transition-all bg-black/50 backdrop-blur-sm">
-      <div className="relative w-full max-w-xl p-8 bg-white border border-gray-100 shadow-2xl rounded-2xl animate-fade-in">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute text-lg text-red-500 transition top-4 right-4 hover:text-red-600"
-          aria-label="Close"
-        >
-          <FaTimes />
-        </button>
-        <h3 className="mb-6 text-2xl font-bold text-center text-sky-700">
-          Add New Route
-        </h3>
-        <form onSubmit={onSubmit} className="space-y-6">
-          {/* From/To */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 transition-all bg-slate-900/50 backdrop-blur-sm">
+      <div className="relative w-full max-w-3xl overflow-hidden bg-white border border-gray-100 shadow-2xl rounded-3xl animate-fade-in">
+        <div className="flex items-center justify-between px-8 py-6 border-b bg-gradient-to-r from-sky-50 to-indigo-50">
           <div>
-            <div className="mb-2 text-sm font-semibold text-gray-600">Route</div>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="from"
-                placeholder="From"
-                value={routeForm.from}
-                onChange={onChange}
-                className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
-                required
-              />
-              <input
-                type="text"
-                name="to"
-                placeholder="To"
-                value={routeForm.to}
-                onChange={onChange}
-                className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
-                required
-              />
+            <h3 className="text-2xl font-bold text-slate-800">Create Route</h3>
+            <p className="mt-1 text-sm text-slate-500">Define your journey details and pricing.</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="grid w-10 h-10 text-red-500 transition bg-white rounded-full shadow place-items-center hover:text-red-600"
+            aria-label="Close"
+          >
+            <FaTimes />
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="p-5 border shadow-sm rounded-2xl bg-slate-50">
+              <div className="text-sm font-semibold text-slate-700">Route</div>
+              <div className="grid grid-cols-1 gap-4 mt-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-500">From</label>
+                  <input
+                    type="text"
+                    name="from_city"
+                    placeholder="Starting city"
+                    value={form.from_city}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 mt-2 border rounded-xl focus:ring-2 focus:ring-sky-400"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-500">To</label>
+                  <input
+                    type="text"
+                    name="to_city"
+                    placeholder="Destination"
+                    value={form.to_city}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 mt-2 border rounded-xl focus:ring-2 focus:ring-sky-400"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="p-5 border shadow-sm rounded-2xl bg-slate-50">
+              <div className="text-sm font-semibold text-slate-700">Pricing</div>
+              <div className="mt-4">
+                <label className="block text-xs font-medium text-slate-500">Fare</label>
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Price"
+                  value={form.price}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 mt-2 border rounded-xl focus:ring-2 focus:ring-sky-400"
+                  required
+                  min={0}
+                />
+              </div>
+              <div className="mt-4 text-xs text-slate-500">
+                Tip: set competitive pricing for higher occupancy.
+              </div>
             </div>
           </div>
-          {/* Departure/Arrival */}
-          <div>
-            <div className="mb-2 text-sm font-semibold text-gray-600">Departure & Arrival</div>
-            <div className="grid grid-cols-2 gap-4">
+
+          <div className="p-5 border shadow-sm rounded-2xl bg-slate-50">
+            <div className="text-sm font-semibold text-slate-700">Schedule</div>
+            <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
               <div>
-                <label className="block mb-1 text-xs text-gray-500">Departure Date</label>
-                <input
-                  type="date"
-                  name="depDate"
-                  value={routeForm.depDate || ""}
-                  onChange={onChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
-                  required
-                />
-                <label className="block mt-2 mb-1 text-xs text-gray-500">Departure Time</label>
+                
+                
+                <label className="block mt-4 text-xs font-medium text-slate-500">Departure Time</label>
                 <input
                   type="time"
                   name="depTime"
-                  value={routeForm.depTime || ""}
-                  onChange={onChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
+                  value={form.depTime}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 mt-2 border rounded-xl focus:ring-2 focus:ring-sky-400"
                   required
                 />
               </div>
               <div>
-                <label className="block mb-1 text-xs text-gray-500">Arrival Date</label>
-                <input
-                  type="date"
-                  name="arrDate"
-                  value={routeForm.arrDate || ""}
-                  onChange={onChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
-                  required
-                />
-                <label className="block mt-2 mb-1 text-xs text-gray-500">Arrival Time</label>
+                <label className="block mt-4 text-xs font-medium text-slate-500">Arrival Time</label>
                 <input
                   type="time"
                   name="arrTime"
-                  value={routeForm.arrTime || ""}
-                  onChange={onChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
+                  value={form.arrTime}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 mt-2 border rounded-xl focus:ring-2 focus:ring-sky-400"
                   required
                 />
               </div>
             </div>
           </div>
-          {/* Price */}
-          <div>
-            <div className="mb-2 text-sm font-semibold text-gray-600">Price</div>
-            <input
-              type="number"
-              name="price"
-              placeholder="Price"
-              value={routeForm.price}
-              onChange={onChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-sky-400"
-              required
-              min={0}
-            />
-          </div>
-          {/* Actions */}
-          <div className="flex justify-end gap-2 pt-2">
+
+          <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 transition bg-gray-100 rounded-lg hover:bg-gray-200"
+              className="px-4 py-2 transition text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 font-semibold text-white transition rounded-lg shadow bg-sky-600 hover:bg-sky-700"
+              className="px-6 py-2 font-semibold text-white transition shadow rounded-xl bg-sky-600 hover:bg-sky-700"
             >
-              Add Route
+              {route ? "Update Route" : "Add Route"}
             </button>
           </div>
         </form>

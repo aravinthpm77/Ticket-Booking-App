@@ -43,7 +43,7 @@ const { getToken } = useAuth();
         throw new Error(err.message || "Failed to create travels");
       }
 
-      toast.success("Travels profile created 🎉");
+      toast.success("Travels profile created");
 
       // Reload dashboard → it will now pass the travels check
       setTimeout(() => {

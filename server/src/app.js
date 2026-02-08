@@ -2,9 +2,8 @@ import express from "express";
 import cors from "cors";
 
 import travelsRoutes from "./routes/travels.routes.js";
-// later:
-// import busRoutes from "./routes/bus.routes.js";
-// import routeRoutes from "./routes/routes.routes.js";
+import routesRoutes from "./routes/routes.routes.js";
+import busRoutes from "./routes/bus.routes.js";
 
 const app = express();
 
@@ -13,8 +12,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/travels", travelsRoutes);
-// app.use("/api/buses", busRoutes);
-// app.use("/api/routes", routeRoutes);
+app.use("/api/routes", routesRoutes);
+app.use("/api/buses", busRoutes);
 
 // Health check
 app.get("/", (req, res) => {

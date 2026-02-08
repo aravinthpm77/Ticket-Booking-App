@@ -69,4 +69,29 @@ router.post("/", requireAuth, async (req, res) => {
   }
 });
 
+router.put("/me", requireAuth, async (req, res) => {
+  const clerkId = req.auth.userId;
+  const { name, email, phone, address } = req.body;
+
+  try {
+    await pool.query(
+      `UPDATE travels 
+       SET name=?, email=?, phone=?, address=? 
+       WHERE owner_clerk_id=?`,
+      [name, email, phone, address, clerkId]
+    );
+
+    const [rows] = await pool.query(
+      "SELECT * FROM travels WHERE owner_clerk_id=?",
+      [clerkId]
+    );
+
+    res.json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update profile" });
+  }
+});
+
+
 export default router;
