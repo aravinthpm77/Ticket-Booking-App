@@ -29,7 +29,7 @@ const { getToken } = useAuth();
       setLoading(true);
       const token = await getToken();
 
-      const res = await fetch("http://localhost:5000/api/travels", {
+      const res = await fetch("https://ticket-booking-app-h1ws.onrender.com/api/travels", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -104,7 +104,7 @@ const OperatorDashboard = () => {
       try {
         const token = await getToken();
 
-        const res = await fetch("http://localhost:5000/api/travels/me", {
+        const res = await fetch("https://ticket-booking-app-h1ws.onrender.com/api/travels/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -138,7 +138,7 @@ const OperatorDashboard = () => {
       try {
         const token = await getToken();
 
-        const res = await fetch("http://localhost:5000/api/routes/me", {
+        const res = await fetch("https://ticket-booking-app-h1ws.onrender.com/api/routes/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -162,7 +162,7 @@ const OperatorDashboard = () => {
       try {
         const token = await getToken();
 
-        const res = await fetch("http://localhost:5000/api/buses", {
+        const res = await fetch("https://ticket-booking-app-h1ws.onrender.com/api/buses", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -223,7 +223,7 @@ const OperatorDashboard = () => {
     try {
       const token = await getToken();
 
-      const res = await fetch("http://localhost:5000/api/buses", {
+      const res = await fetch("https://ticket-booking-app-h1ws.onrender.com/api/buses", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -242,7 +242,7 @@ const OperatorDashboard = () => {
     try {
       const token = await getToken();
 
-      const res = await fetch("http://localhost:5000/api/buses", {
+      const res = await fetch("https://ticket-booking-app-h1ws.onrender.com/api/buses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -268,8 +268,8 @@ const OperatorDashboard = () => {
       const token = await getToken();
       const isEdit = !!editingRoute;
       const url = isEdit
-        ? `http://localhost:5000/api/routes/${editingRoute.id}`
-        : "http://localhost:5000/api/routes";
+        ? `https://ticket-booking-app-h1ws.onrender.com/api/routes/${editingRoute.id}`
+        : "https://ticket-booking-app-h1ws.onrender.com/api/routes";
       const method = isEdit ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -319,7 +319,7 @@ const OperatorDashboard = () => {
 
     try {
       const token = await getToken();
-      const res = await fetch(`http://localhost:5000/api/routes/${route.id}`, {
+      const res = await fetch(`https://ticket-booking-app-h1ws.onrender.com/api/routes/${route.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -365,7 +365,7 @@ const OperatorDashboard = () => {
   const handleProfileSave = async () => {
     try {
       const token = await getToken();
-      const res = await fetch("http://localhost:5000/api/travels/me", {
+      const res = await fetch("https://ticket-booking-app-h1ws.onrender.com/api/travels/me", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
