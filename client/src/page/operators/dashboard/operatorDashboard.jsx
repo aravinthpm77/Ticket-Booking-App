@@ -20,6 +20,8 @@ import { toast } from "react-toastify";
 import BusModal from "./createBus";
 import RouteModal from "./createRoute";
 import CreateTravels from "./createTravels";
+import DashboardLoader from "./dashboardloader";
+
 
 const DASHBOARD_TABS = [
   { label: "Dashboard", icon: <FaTachometerAlt />, key: "dashboard" },
@@ -396,7 +398,7 @@ const OperatorDashboard = () => {
   };
 
   if (loadingTravels) {
-    return <div className="grid h-screen text-xl place-items-center">Loading...</div>;
+    return <DashboardLoader />;
   }
 
   if (!travels) {

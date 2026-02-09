@@ -16,8 +16,8 @@ function AllRouter(){
             <Route exact path="/about" element={<About/>}/>
             <Route exact path="/bus-ticket" element={<Ticket/>}/>
             <Route exact path="/bus-ticket/details" element={<Details/>}/>
-            <Route exact path="/login" element={<OperatorAuth/>}/>
-            <Route path="/signup" element={<CustomSignUp />} />
+            <Route path="/login/*" element={<OperatorAuth/>}/>
+            <Route path="/signup/*" element={<CustomSignUp />} />
             <Route 
                 exact path="/operator/dashboard" 
                 element={
