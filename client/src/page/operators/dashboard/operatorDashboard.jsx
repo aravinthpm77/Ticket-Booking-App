@@ -20,11 +20,13 @@ import { toast } from "react-toastify";
 import BusModal from "./createBus";
 import RouteModal from "./createRoute";
 import CreateTravels from "./createTravels";
+import CreateScheduleModal from "./createSchedule";
 import DashboardLoader from "./dashboardloader";
 
 
 const DASHBOARD_TABS = [
   { label: "Dashboard", icon: <FaTachometerAlt />, key: "dashboard" },
+  { label: "Schedules", icon: <FaCalendarAlt />, key: "schedules" },
   { label: "Buses", icon: <FaBus />, key: "buses" },
   { label: "Routes", icon: <FaRoute />, key: "routes" },
   { label: "Profile", icon: <FaUserCircle />, key: "profile" },
@@ -44,18 +46,33 @@ const OperatorDashboard = () => {
   const { user } = useUser();
   const { getToken } = useAuth();
   
+  //travels
   const [travels, setTravels] = useState(null);
   const [loadingTravels, setLoadingTravels] = useState(true);
   const [activeTab, setActiveTab] = useState("dashboard");
 
-
+ //routes
   const [routes, setRoutes] = useState([]);
   const [, setLoadingRoutes] = useState(true);
   const [editingRoute, setEditingRoute] = useState(null);
 
+  //buses
   const [buses, setBuses] = useState([]);
 
+  //schedules
+  const [schedules, setSchedules] = useState([]);
+  const [routesMap, setRoutesMap] = useState([]);
+  const [busesMap, setBusesMap] = useState([]);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
 
+  const [scheduleForm, setScheduleForm] = useState({
+    routeId: "",
+    busId: "",
+    travelDate: "",
+    departureTime: "",
+    arrivalTime: "",
+    price: "",
+  });
 
 
 
@@ -70,7 +87,7 @@ const OperatorDashboard = () => {
     address: "",
   });
 
-  // Modal state
+  
   const [showBusModal, setShowBusModal] = useState(false);
   const [showRouteModal, setShowRouteModal] = useState(false);
 
@@ -184,6 +201,51 @@ const OperatorDashboard = () => {
   }, [travels, getToken]);
 
 
+  useEffect(() => {
+    if(!travels) return;
+
+    const loadData = async() => {
+      try {
+        const token = await getToken();
+        const localBaseUrl = "http://localhost:5000";
+
+        const [routesRes, busesRes, schedulesRes] = await Promise.all([
+          fetch("https://ticket-booking-app-h1ws.onrender.com/api/routes/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch("https://ticket-booking-app-h1ws.onrender.com/api/buses", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`${localBaseUrl}/api/schedules`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+
+        if (!routesRes.ok || !busesRes.ok || !schedulesRes.ok) {
+          throw new Error("Failed to load routes, buses, or schedules");
+        }
+
+        const [routesData, busesData, schedulesData] = await Promise.all([
+          routesRes.json(),
+          busesRes.json(),
+          schedulesRes.json(),
+        ]);
+
+        setRoutesMap(routesData || []);
+        setBusesMap(busesData || []);
+        setSchedules(schedulesData || []);
+      } catch (err) {
+        console.error("Failed to load routes/buses", err);
+        toast.error("Failed to load schedules data");
+      }
+    }
+    loadData();
+  },[travels, getToken]);
+
+  useEffect(() => {
+    if (!travels) return;
+    fetchSchedules();
+  }, [travels]);
 
   const handleBusChange = (e) => {
     const { name, value } = e.target;
@@ -238,6 +300,32 @@ const OperatorDashboard = () => {
       toast.error("Failed to load buses");
     }
   };
+
+  const fetchSchedules = async () => {
+  try {
+    const token = await getToken();
+
+    const res = await fetch(
+      "http://localhost:5000/api/schedules",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch schedules");
+    }
+
+    const data = await res.json();
+    setSchedules(data || []);
+  } catch (err) {
+    console.error("Failed to fetch schedules", err);
+    toast.error("Failed to load schedules");
+  }
+};
+
 
   const handleBusSubmit = async (e) => {
     e.preventDefault();
@@ -361,6 +449,80 @@ const OperatorDashboard = () => {
     return String(value).replace(/-/g, " ");
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  };
+
+  const formatTime = (timeString) => {
+    if (!timeString) return "-";
+    const parts = String(timeString).includes("T")
+      ? String(timeString).split("T")
+      : String(timeString).split(" ");
+    const time = parts[1] || parts[0] || "";
+    return time ? time.slice(0, 5) : "-";
+  };
+
+  const handleScheduleChange = (e) => {
+    setScheduleForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleScheduleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const token = await getToken();
+
+      // Convert camelCase to snake_case for server
+      const payload = {
+        route_id: scheduleForm.routeId,
+        bus_id: scheduleForm.busId,
+        travel_date: scheduleForm.travelDate,
+        departure_time: scheduleForm.departureTime,
+        arrival_time: scheduleForm.arrivalTime,
+        price: scheduleForm.price,
+      };
+
+      const res = await fetch(
+        "http://localhost:5000/api/schedules",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || "Failed to create schedule");
+      }
+
+      toast.success("Schedule created");
+      setShowScheduleModal(false);
+      setScheduleForm({
+        routeId: "",
+        busId: "",
+        travelDate: "",
+        departureTime: "",
+        arrivalTime: "",
+        price: "",
+      });
+
+      fetchSchedules(); // refresh table
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Failed to create schedule");
+    }
+  };
+
+
   // Profile edit handlers
   const handleProfileChange = (e) => setProfile({ ...profile, [e.target.name]: e.target.value });
 
@@ -397,6 +559,8 @@ const OperatorDashboard = () => {
     }
   };
 
+
+
   if (loadingTravels) {
     return <DashboardLoader />;
   }
@@ -408,10 +572,10 @@ const OperatorDashboard = () => {
 
 
   return (
-    <div className="h-screen bg-white">
-      <div className="flex h-screen mx-auto shadow-2xl bg-indigo-50 rounded-3xl">
+    <div className="min-h-screen bg-white">
+      <div className="flex min-h-screen w-full max-w-[2500px] mx-auto bg-indigo-50 shadow-2xl rounded-3xl overflow-hidden flex-col lg:flex-row lg:h-screen">
         {/* Sidebar Nav - ~10% */}
-        <nav className="basis-[10%] min-w-[250px] border-r bg-white backdrop-blur p-6 overflow-y-auto">
+        <nav className="w-full lg:w-[260px] lg:shrink-0 border-r bg-white backdrop-blur p-6 lg:overflow-y-hidden lg:h-screen">
           <div className="mb-16">
             
             <span className="block mt-4 text-lg font-bold text-gray-700">Operator</span>
@@ -445,7 +609,7 @@ const OperatorDashboard = () => {
         </nav>
 
         {/* Main Content - center (~65%) */}
-        <main className="basis-[65%] p-8 overflow-y-auto mt-24">
+        <main className="flex-1 min-w-0 p-8 mt-24 lg:overflow-y-auto lg:h-screen">
         <AnimatePresence>
           {activeTab === "dashboard" && (
             <motion.div
@@ -543,6 +707,109 @@ const OperatorDashboard = () => {
                     ))}
                   </div>
                 </div>
+            </motion.div>
+          )}
+
+          {activeTab === "schedules" && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Header */}
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">Schedule Management</h2>
+                  <p className="mt-1 text-sm text-gray-500">Assign buses to routes with date, time & pricing.</p>
+                </div>
+                <button
+                  onClick={() => setShowScheduleModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-white rounded-xl bg-sky-600 hover:bg-sky-700"
+                >
+                  <FaPlus /> Create Schedule
+                </button>
+              </div>
+
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+                <div className="p-4 bg-white shadow rounded-2xl">
+                  <div className="text-xs text-gray-500">Total Schedules</div>
+                  <div className="mt-1 text-2xl font-semibold text-gray-800">{schedules.length}</div>
+                </div>
+                <div className="p-4 bg-white shadow rounded-2xl">
+                  <div className="text-xs text-gray-500">Avg Fare</div>
+                  <div className="mt-1 text-2xl font-semibold text-gray-800">
+                    ₹{Math.round(schedules.reduce((sum, s) => sum + Number(s.price || 0), 0) / (schedules.length || 1))}
+                  </div>
+                </div>
+                <div className="p-4 text-white shadow rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500">
+                  <div className="text-xs opacity-90">Active this week</div>
+                  <div className="mt-1 text-2xl font-semibold">
+                    {schedules.filter((s) => {
+                      const scheduleDate = new Date(s.travel_date);
+                      const today = new Date();
+                      const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+                      return scheduleDate >= today && scheduleDate <= weekFromNow;
+                    }).length}
+                  </div>
+                </div>
+              </div>
+
+              {/* Schedules Grid */}
+              {schedules.length === 0 ? (
+                <div className="p-12 text-center bg-white shadow rounded-2xl">
+                  <FaCalendarAlt className="mx-auto mb-4 text-4xl text-gray-300" />
+                  <p className="text-gray-400">No schedules created yet</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  {schedules.map((schedule) => (
+                    <div key={schedule.id} className="p-5 bg-white shadow rounded-2xl">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <div className="text-lg font-semibold text-gray-800">
+                            {schedule.from_place} → {schedule.to_place}
+                          </div>
+                          <div className="mt-1 text-xs text-gray-500">{schedule.bus_name}</div>
+                        </div>
+                        <span className="px-3 py-1 text-xs font-semibold rounded-full text-emerald-700 bg-emerald-100">
+                          ₹{schedule.price}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="p-3 rounded-xl bg-slate-50">
+                          <div className="text-xs text-gray-500">Date</div>
+                          <div className="mt-1 text-sm font-semibold text-gray-800">{formatDate(schedule.travel_date)}</div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-slate-50">
+                          <div className="text-xs text-gray-500">Vehicle</div>
+                          <div className="mt-1 text-sm font-semibold text-gray-800">{schedule.bus_layout}</div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-sky-50">
+                          <div className="text-xs text-sky-600">Departs</div>
+                          <div className="mt-1 text-sm font-semibold text-sky-700">{formatTime(schedule.departure_time)}</div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-indigo-50">
+                          <div className="text-xs text-indigo-600">Arrives</div>
+                          <div className="mt-1 text-sm font-semibold text-indigo-700">{formatTime(schedule.arrival_time)}</div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <button className="flex-1 px-4 py-2 text-blue-700 rounded-xl bg-blue-50 hover:bg-blue-100" aria-label="Edit schedule">
+                          <FaEdit className="inline" />
+                          <span className="ml-2 text-sm">Edit</span>
+                        </button>
+                        <button className="flex-1 px-4 py-2 text-red-700 rounded-xl bg-red-50 hover:bg-red-100" aria-label="Delete schedule">
+                          <FaTrash className="inline" />
+                          <span className="ml-2 text-sm">Remove</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -920,10 +1187,20 @@ const OperatorDashboard = () => {
           onSave={handleSaveRoute}
           route={editingRoute}
         />
+        <CreateScheduleModal
+          open={showScheduleModal}
+          onClose={() => setShowScheduleModal(false)}
+          onSubmit={handleScheduleSubmit}
+          form={scheduleForm}
+          onChange={handleScheduleChange}
+          routes={routesMap}
+          buses={busesMap}
+        />
+
         </main>
 
         {/* Right Summary Panel (~25%) */}
-        <aside className="basis-[25%] p-8 bg-white/80 border-l mt-24 overflow-y-auto rounded-tr-3xl rounded-br-3xl">
+        <aside className="w-full lg:w-[320px] lg:shrink-0 p-8 bg-white/80 border-l mt-24 lg:overflow-y-hidden lg:h-screen lg:rounded-tr-3xl lg:rounded-br-3xl">
           <div className="text-2xl font-bold text-gray-800">Summary</div>
           {/* Balance */}
           <div className="p-5 mt-6 bg-white shadow rounded-2xl">

@@ -4,7 +4,7 @@ import cors from "cors";
 import travelsRoutes from "./routes/travels.routes.js";
 import routesRoutes from "./routes/routes.routes.js";
 import busRoutes from "./routes/bus.routes.js";
-
+import scheduleRoutes from "./routes/schedules.routes.js";
 const app = express();
 
 app.use(cors());
@@ -14,6 +14,7 @@ app.use(express.json());
 app.use("/api/travels", travelsRoutes);
 app.use("/api/routes", routesRoutes);
 app.use("/api/buses", busRoutes);
+app.use("/api/schedules", scheduleRoutes);
 
 // Health check
 app.get("/", (req, res) => {
