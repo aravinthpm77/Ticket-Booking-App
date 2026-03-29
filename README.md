@@ -2,21 +2,14 @@
 
 Full-stack bus ticket booking application for passengers and operators, built with React, Express, MySQL, and Clerk authentication.
 
-## Project Status
+## Overview
 
-- Monorepo with separate client and server applications
-- Core operator workflow implemented: travels profile, routes, buses, schedules
-- Public schedule listing implemented for customer-side discovery
+This repository includes:
 
-## Highlights
+- client: React frontend for passengers and operators
+- server: Express API with MySQL and Clerk-based auth
 
-- Passenger-facing schedule discovery flow
-- Operator dashboard with protected route access
-- REST API with modular route handlers
-- MySQL-backed persistence layer
-- Clerk-powered authentication and authorization
-
-## Architecture
+## Structure
 
 ```text
 booking ticket/
@@ -44,7 +37,7 @@ booking ticket/
 
 ## Quick Start
 
-### 1. Install dependencies
+### 1) Install dependencies
 
 ```bash
 cd client
@@ -54,9 +47,9 @@ cd ../server
 npm install
 ```
 
-### 2. Configure backend environment
+### 2) Configure server environment
 
-Create a .env file in server/:
+Create `server/.env`:
 
 ```env
 PORT=5000
@@ -68,12 +61,12 @@ DB_NAME=your-db-name
 CLERK_SECRET_KEY=your-clerk-secret-key
 ```
 
-Required local files:
+Required files:
 
 - server/.env
 - server/ca.pem
 
-### 3. Start backend
+### 3) Start backend
 
 ```bash
 cd server
@@ -82,7 +75,7 @@ npm run dev
 
 API base URL: http://localhost:5000
 
-### 4. Start frontend
+### 4) Start frontend
 
 ```bash
 cd client
@@ -91,71 +84,21 @@ npm start
 
 Web app URL: http://localhost:3000
 
-## Available Scripts
-
-### Client
-
-- npm start: Runs the React development server
-- npm run build: Creates production build artifacts
-- npm test: Runs test suite
-
-### Server
-
-- npm run dev: Starts API with nodemon
-- npm start: Starts API with node
-
-## API Reference
+## API (Current)
 
 Base path: /api
 
-### Travels
-
-- GET /travels/me (protected)
-- POST /travels (protected)
-- PUT /travels/me (protected)
-
-### Routes
-
-- POST /routes (protected)
-- GET /routes/me (protected)
-- PUT /routes/:id (protected)
-- DELETE /routes/:id (protected)
-
-### Buses
-
-- POST /buses (protected)
-- GET /buses (protected)
-- DELETE /buses/:id (protected)
-
-### Schedules
-
-- GET /schedules/all (public)
-- GET /schedules (protected)
-- POST /schedules (protected)
-- PUT /schedules/:id (protected)
-- DELETE /schedules/:id (protected)
+- Travels: GET /travels/me, POST /travels, PUT /travels/me
+- Routes: POST /routes, GET /routes/me, PUT /routes/:id, DELETE /routes/:id
+- Buses: POST /buses, GET /buses, DELETE /buses/:id
+- Schedules: GET /schedules/all (public), GET /schedules, POST /schedules, PUT /schedules/:id, DELETE /schedules/:id
 
 ## Authentication
 
-Authentication is handled with Clerk:
+Clerk secures operator routes.
 
-- Client integration: @clerk/clerk-react
-- Server route protection: ClerkExpressRequireAuth
-
-Use environment-specific Clerk keys for local, staging, and production.
-
-## Configuration Notes
-
-- Server listens on the value of PORT from server/.env
-- Database configuration reads DB_* values from server/.env
-- SSL CA certificate is read from server/ca.pem
-
-## Known Gaps
-
-- Frontend currently mixes local and hosted API URLs in some places
-- Clerk publishable key is currently hardcoded in the client entry point
-
-Recommended next step: move all API and auth configuration to environment variables for consistent local and production behavior.
+- Frontend: @clerk/clerk-react
+- Backend: ClerkExpressRequireAuth
 
 ## Troubleshooting
 
