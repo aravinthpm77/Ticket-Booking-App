@@ -1,4 +1,4 @@
-# Booking Ticket Platform
+# GOBus Ticketing & Fleet System
 
 Full-stack bus ticket booking application for passengers and operators, built with React, Express, MySQL, and Clerk authentication.
 
