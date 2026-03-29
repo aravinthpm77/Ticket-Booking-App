@@ -1,12 +1,40 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react"
+import { Link } from "react-router-dom";
 
 const Footer =()=>{
 
-    const services=["Bus operator registration","Agent registration","Insurance partner","User agreement"];
-    const about=["GoBus","Mobile version","About us","Investor Relations","Careers"];
-    const helpful=["Contact","FAQs","Live Chat"];
-    const legal=["Accessibility","Returns Policy","Hiring Statistics","Refund Policy"];
+    const services = [
+      { name: "Bus operator registration", slug: "operator-registration" },
+      { name: "Agent registration", slug: "agent-registration" },
+      { name: "Insurance partner", slug: "insurance-partner" },
+      { name: "User agreement", slug: "user-agreement" }
+    ];
+    const about=[ 
+      { name: "GoBus", slug: "gobus" }, 
+      { name: "Mobile version", slug: "mobile-version" }, 
+      { name: "About us", slug: "about-us" }, 
+      { name: "Investor Relations", slug: "investor-relations" }, 
+      { name: "Careers", slug: "careers" } 
+    ];
+    const helpful=[ 
+      { name: "Contact", slug: "contact" }, 
+      { name: "FAQs", slug: "faqs" }, 
+      { name: "Live Chat", slug: "live-chat" } 
+    ];
+    const legal=[ 
+      { name: "Accessibility", slug: "accessibility" }, 
+      { name: "Returns Policy", slug: "returns-policy" }, 
+      { name: "Hiring Statistics", slug: "hiring-statistics" }, 
+      { name: "Refund Policy", slug: "refund-policy" } 
+    ];
+
+    const sections = [
+    { title: "Services", items: services, cat: "services" },
+    { title: "About GoBus", items: about, cat: "about" },
+    { title: "Helpful Links", items: helpful, cat: "help" },
+    { title: "Legal", items: legal, cat: "legal" },
+  ];
 
 return(
 
@@ -125,62 +153,25 @@ return(
           </li>
         </ul>
       </div>
-      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-4">
-        <div>
-          <p class="font-medium text-gray-900">Services</p>
-
-          <ul class="mt-6 space-y-4 text-sm">
-            {services?.map((item,key)=>(
-                <div key={key}>
-                    <li>
-                    <a href="#" class="text-gray-700 transition hover:opacity-75"> {item}</a>
-                    </li>
-                </div>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <p class="font-medium text-gray-900">About GoBus</p>
-
-          <ul class="mt-6 space-y-4 text-sm">
-          {about?.map((item,key)=>(
-                <div key={key}>
-                    <li>
-                    <a href="#" class="text-gray-700 transition hover:opacity-75"> {item}</a>
-                    </li>
-                </div>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <p class="font-medium text-gray-900">Helpful Links</p>
-
-          <ul class="mt-6 space-y-4 text-sm">
-            {helpful?.map((item,key)=>(
-                <div key={key}>
-                    <li>
-                    <a href="#" class="text-gray-700 transition hover:opacity-75"> {item}</a>
-                    </li>
-                </div>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <p class="font-medium text-gray-900">Legal</p>
-
-          <ul class="mt-6 space-y-4 text-sm">
-            {legal?.map((item,key)=>(
-                <div key={key}>
-                    <li>
-                    <a href="#" class="text-gray-700 transition hover:opacity-75"> {item}</a>
-                    </li>
-                </div>
-            ))}
-          </ul>
-        </div>
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-4">
+        {sections.map((section) => (
+          <div key={section.title}>
+            <p className="font-medium text-gray-900">{section.title}</p>
+            <ul className="mt-6 space-y-4 text-sm">
+              {section.items.map((item) => (
+                <li key={item.slug}>
+                  {/* Dynamic Route: /info/services/operator-registration */}
+                  <Link 
+                    to={`/info/${section.cat}/${item.slug}`} 
+                    className="text-gray-700 transition hover:opacity-75"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
 

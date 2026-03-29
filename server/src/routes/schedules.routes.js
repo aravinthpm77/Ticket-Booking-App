@@ -4,6 +4,40 @@ import { requireAuth } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
+
+/**
+ * GET /api/schedules/all - PUBLIC ROUTE for customers
+ */
+router.get("/all", async (req, res) => {
+  try {
+    const [schedules] = await pool.query(
+      `SELECT 
+        s.id,
+        s.travel_date,
+        s.departure_time,
+        s.arrival_time,
+        s.price,
+        r.from_city,
+        r.to_city,
+        b.bus_name,
+        b.bus_type,
+        b.layout as bus_layout,
+        b.total_seats,
+        t.name as travels_name
+       FROM schedules s
+       JOIN routes r ON s.route_id = r.id
+       JOIN buses b ON s.bus_id = b.id
+       JOIN travels t ON s.travels_id = t.id
+       ORDER BY s.travel_date ASC`
+    );
+
+    res.json(schedules);
+  } catch (err) {
+    console.error("Fetch all schedules error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 /**
  * GET /api/schedules - Fetch all schedules for operator's buses/routes
  */
@@ -246,5 +280,9 @@ router.delete("/:id", requireAuth, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
+
+
 
 export default router;

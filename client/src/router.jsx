@@ -7,7 +7,7 @@ import OperatorDashboard from "./page/operators/dashboard/operatorDashboard";
 import ProtectedOperatorRoute from "./components/auth/ProtectedOperatorRoute";
 import OperatorAuth from "./page/operators/login/operatorsLogin";
 import CustomSignUp from "./page/operators/login/customSignUp";
-
+import InfoPage from "./page/infopage";
 function AllRouter(){
     return(
         <Routes>
@@ -26,6 +26,7 @@ function AllRouter(){
                     </ProtectedOperatorRoute>
                 } 
             />
+             <Route path="/info/:category/:slug" element={<InfoPage />} />
         </Routes>
     )    
 }
