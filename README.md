@@ -1,24 +1,32 @@
 # Booking Ticket Platform
 
-A full-stack bus ticket booking platform with customer search and operator management workflows.
+Full-stack bus ticket booking application for passengers and operators, built with React, Express, MySQL, and Clerk authentication.
 
-## Overview
+## Project Status
 
-This repository contains two applications:
+- Monorepo with separate client and server applications
+- Core operator workflow implemented: travels profile, routes, buses, schedules
+- Public schedule listing implemented for customer-side discovery
 
-- **Client**: React application for passengers and bus operators
-- **Server**: Node.js + Express REST API with MySQL persistence and Clerk authentication
+## Highlights
 
-The platform supports:
+- Passenger-facing schedule discovery flow
+- Operator dashboard with protected route access
+- REST API with modular route handlers
+- MySQL-backed persistence layer
+- Clerk-powered authentication and authorization
 
-- Public schedule discovery for passengers
-- Operator onboarding and protected dashboard access
-- Travel company profile management
-- Route, bus, and schedule CRUD operations
+## Architecture
+
+```text
+booking ticket/
+  client/   React frontend (CRA + Tailwind)
+  server/   Express API (ESM + MySQL)
+```
 
 ## Tech Stack
 
-### Frontend (client)
+### Frontend
 
 - React 18
 - React Router
@@ -26,34 +34,29 @@ The platform supports:
 - Framer Motion
 - Clerk React SDK
 
-### Backend (server)
+### Backend
 
 - Node.js (ES Modules)
 - Express 5
-- MySQL (`mysql2`)
+- MySQL via mysql2
 - Clerk Node SDK
-- dotenv + nodemon
+- dotenv and nodemon
 
-## Repository Structure
+## Quick Start
 
-```text
-booking ticket/
-  client/   # React frontend
-  server/   # Express backend API
+### 1. Install dependencies
+
+```bash
+cd client
+npm install
+
+cd ../server
+npm install
 ```
 
-## Prerequisites
+### 2. Configure backend environment
 
-Install the following before running locally:
-
-- Node.js 18+ and npm
-- MySQL database (or compatible managed MySQL)
-- Clerk account and API credentials
-- SSL CA certificate file for DB connection (`server/ca.pem`)
-
-## Environment Configuration
-
-Create a `.env` file inside `server/`:
+Create a .env file in server/:
 
 ```env
 PORT=5000
@@ -65,106 +68,102 @@ DB_NAME=your-db-name
 CLERK_SECRET_KEY=your-clerk-secret-key
 ```
 
-Notes:
+Required local files:
 
-- `PORT` is required by `server.js`.
-- The DB pool loads environment variables from `server/.env`.
-- The database config expects `server/ca.pem` to exist.
+- server/.env
+- server/ca.pem
 
-## Installation
-
-From the repository root, install dependencies for both apps:
-
-```bash
-cd client
-npm install
-
-cd ../server
-npm install
-```
-
-## Running the Project
-
-Run each app in a separate terminal.
-
-### 1) Start backend
+### 3. Start backend
 
 ```bash
 cd server
 npm run dev
 ```
 
-Default API URL:
+API base URL: http://localhost:5000
 
-- `http://localhost:5000`
-
-### 2) Start frontend
+### 4. Start frontend
 
 ```bash
 cd client
 npm start
 ```
 
-Default web URL:
-
-- `http://localhost:3000`
+Web app URL: http://localhost:3000
 
 ## Available Scripts
 
-### Client (`client/package.json`)
+### Client
 
-- `npm start` - start development server
-- `npm run build` - build production bundle
-- `npm test` - run tests
+- npm start: Runs the React development server
+- npm run build: Creates production build artifacts
+- npm test: Runs test suite
 
-### Server (`server/package.json`)
+### Server
 
-- `npm run dev` - start API with nodemon
-- `npm start` - start API with node
+- npm run dev: Starts API with nodemon
+- npm start: Starts API with node
 
-## API Surface (Current)
+## API Reference
 
-Base path: `/api`
+Base path: /api
 
-- `GET /travels/me` (protected)
-- `POST /travels` (protected)
-- `PUT /travels/me` (protected)
-- `POST /routes` (protected)
-- `GET /routes/me` (protected)
-- `PUT /routes/:id` (protected)
-- `DELETE /routes/:id` (protected)
-- `POST /buses` (protected)
-- `GET /buses` (protected)
-- `DELETE /buses/:id` (protected)
-- `GET /schedules/all` (public)
-- `GET /schedules` (protected)
-- `POST /schedules` (protected)
-- `PUT /schedules/:id` (protected)
-- `DELETE /schedules/:id` (protected)
+### Travels
+
+- GET /travels/me (protected)
+- POST /travels (protected)
+- PUT /travels/me (protected)
+
+### Routes
+
+- POST /routes (protected)
+- GET /routes/me (protected)
+- PUT /routes/:id (protected)
+- DELETE /routes/:id (protected)
+
+### Buses
+
+- POST /buses (protected)
+- GET /buses (protected)
+- DELETE /buses/:id (protected)
+
+### Schedules
+
+- GET /schedules/all (public)
+- GET /schedules (protected)
+- POST /schedules (protected)
+- PUT /schedules/:id (protected)
+- DELETE /schedules/:id (protected)
 
 ## Authentication
 
-Clerk is used for operator authentication.
+Authentication is handled with Clerk:
 
-- Frontend uses `@clerk/clerk-react`
-- Backend protects routes with `ClerkExpressRequireAuth`
+- Client integration: @clerk/clerk-react
+- Server route protection: ClerkExpressRequireAuth
 
-Ensure Clerk publishable and secret keys are configured appropriately for each environment.
+Use environment-specific Clerk keys for local, staging, and production.
 
-## Deployment Notes
+## Configuration Notes
 
-- Configure CORS in production to allow only trusted frontend origins.
-- Replace hardcoded API URLs in the frontend with environment-driven configuration.
-- Keep Clerk keys and DB credentials in secure environment variables.
-- Use managed secrets in CI/CD and hosting platforms.
+- Server listens on the value of PORT from server/.env
+- Database configuration reads DB_* values from server/.env
+- SSL CA certificate is read from server/ca.pem
+
+## Known Gaps
+
+- Frontend currently mixes local and hosted API URLs in some places
+- Clerk publishable key is currently hardcoded in the client entry point
+
+Recommended next step: move all API and auth configuration to environment variables for consistent local and production behavior.
 
 ## Troubleshooting
 
-- **Server exits on startup**: verify `PORT` is set in `server/.env`.
-- **DB connection fails**: verify DB credentials and `server/ca.pem` path.
-- **401 on protected routes**: verify Clerk token is included in `Authorization` header.
-- **Mixed API behavior (local vs hosted)**: standardize API base URL configuration in client code.
+- Server exits on startup: confirm PORT exists in server/.env
+- Database connection fails: validate DB credentials and ca.pem file path
+- 401 on protected routes: ensure auth token is sent in Authorization header
+- CORS issues: verify allowed origins in backend CORS configuration
 
 ## License
 
-No license file is currently defined. Add a `LICENSE` file if you plan to distribute this project.
+No license file is currently defined.
