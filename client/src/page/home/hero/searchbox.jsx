@@ -86,7 +86,7 @@ const BusSearch = () => {
   return (
     <div className="relative mx-auto flex w-full max-w-[450px] flex-col items-stretch rounded-2xl md:max-w-[600px] lg:max-w-[1000px] lg:flex-row lg:items-center lg:rounded-full">
       
-      <div ref={fromRef} className="relative flex items-center w-full p-4 border-b border-gray-300 cursor-pointer bg-slate-100 rounded-t-2xl lg:flex-grow lg:border-b-0 lg:border-r lg:p-7 lg:pl-5 lg:rounded-t-none lg:rounded-s-full">
+      <div ref={fromRef} className="relative flex items-center w-full p-4 border-b border-gray-300 cursor-pointer bg-slate-100 rounded-t-2xl lg:flex-grow lg:border-b-0 lg:border-r lg:p-7 lg:pl-5 lg:rounded-t-none lg:rounded-l-full lg:rounded-r-none">
         <div className="relative flex items-center w-full">
         <img width="20" height="20" src="https://img.icons8.com/small/50/bus.png" alt="bus" className='flex-shrink-0 mr-2'/>
         <input
@@ -174,10 +174,11 @@ const BusSearch = () => {
       <img width="24" height="24" src="https://img.icons8.com/fluency-systems-regular/50/calendar--v1.png" alt="calendar--v1"/>
         
         <DatePicker
-        selected={date}S
+        selected={date}
         onChange={handleChange}
         dateFormat="d MMM yyyy"
-        className="w-full px-4 py-2 bg-transparent cursor-pointer focus:outline-none caret-transparent placeholder:text-slate-950"
+        wrapperClassName="w-full"
+        className="w-full py-2 pl-2 bg-transparent cursor-pointer focus:outline-none caret-transparent placeholder:text-slate-950"
         placeholderText="Date">
 
         </DatePicker>
