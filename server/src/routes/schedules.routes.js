@@ -37,7 +37,25 @@ router.get("/all", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
+/**
+ * GET /api/schedules/cities - PUBLIC
+ * Fetches unique cities for the search dropdown
+ */
+router.get("/cities", async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT DISTINCT from_city as city FROM routes
+      UNION
+      SELECT DISTINCT to_city as city FROM routes
+      ORDER BY city ASC
+    `);
+    // Extract strings from objects: [{city: 'Hosur'}] -> ['Hosur']
+    const cities = rows.map(r => r.city);
+    res.json(cities);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching cities" });
+  }
+});
 /**
  * GET /api/schedules - Fetch all schedules for operator's buses/routes
  */
