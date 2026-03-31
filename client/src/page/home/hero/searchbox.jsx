@@ -84,7 +84,7 @@ const BusSearch = () => {
     : dbCities;
 
   return (
-    <div className="relative mx-auto flex w-full max-w-[450px] flex-col items-stretch rounded-2xl md:max-w-[600px] lg:max-w-[1000px] lg:flex-row lg:items-center lg:rounded-full">
+    <div className="relative mx-auto flex w-full max-w-[450px] flex-col items-stretch rounded-2xl md:max-w-[600px] lg:max-w-[1000px] lg:flex-row lg:items-center lg:rounded-none">
       
       <div ref={fromRef} className="relative flex items-center w-full p-4 border-b border-gray-300 cursor-pointer bg-slate-100 rounded-t-2xl lg:flex-grow lg:border-b-0 lg:border-r lg:p-7 lg:pl-5 lg:rounded-t-none lg:rounded-l-full lg:rounded-r-none">
         <div className="relative flex items-center w-full">
@@ -121,15 +121,15 @@ const BusSearch = () => {
             ))}
           </ul>
         )}
-      </div>
 
-      {/* Reverse Button */}
-      <button
-        className="absolute z-[70] hidden h-12 w-12 items-center  justify-center rounded-full border border-gray-300 bg-white p-3 align-middle duration-300 hover:bg-slate-200 lg:flex lg:ml-[270px]"
-        onClick={reverseCities}
-      >
-       <div className='scale-110'> <img width="20" height="20" src="https://img.icons8.com/material-sharp/24/sorting-arrows-horizontal.png" alt="sorting-arrows-horizontal"/></div>
-      </button>
+        {/* Reverse Button */}
+        <button
+          className="absolute right-0 top-1/2 z-[80] hidden h-12 w-12 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full border border-gray-300 bg-white p-3 align-middle duration-300 hover:bg-slate-200 lg:flex"
+          onClick={reverseCities}
+        >
+         <div className='scale-110'> <img width="20" height="20" src="https://img.icons8.com/material-sharp/24/sorting-arrows-horizontal.png" alt="sorting-arrows-horizontal"/></div>
+        </button>
+      </div>
 
       {/* To Field */}
       <div ref={toRef} className="relative flex items-center w-full p-4 border-b border-gray-300 bg-slate-100 lg:flex-grow lg:border-b-0 lg:border-r lg:p-7 lg:pl-8">
