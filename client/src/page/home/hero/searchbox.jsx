@@ -21,7 +21,7 @@ const BusSearch = () => {
   const toInputRef = useRef(null);
   
   useEffect(() => {
-    fetch("http://localhost:5000/api/schedules/cities")
+    fetch("https://ticket-booking-app-h1ws.onrender.com/api/schedules/cities")
       .then(res => res.json())
       .then(data => setDbCities(data))
       .catch(err => console.error("City fetch error:", err));
