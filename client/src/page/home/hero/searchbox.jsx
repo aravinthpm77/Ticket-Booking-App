@@ -22,7 +22,7 @@ const BusSearch = () => {
   const toInputRef = useRef(null);
   
   useEffect(() => {
-    fetch(apiUrl('/api/schedules/cities'))
+    fetch("http://localhost:5000/api/schedules/cities")
       .then(res => res.json())
       .then(data => setDbCities(data))
       .catch(err => console.error("City fetch error:", err));

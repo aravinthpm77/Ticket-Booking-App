@@ -17,7 +17,7 @@ const SearchResult = () => {
     const fetchBusResults = async () => {
       try {
         setLoading(true);
-        const res = await fetch(apiUrl('/api/schedules/all'));
+        const res = await fetch("http://localhost:5000/api/schedules/all");
         const data = await res.json();
 
         // 1. Filter results based on search inputs
