@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
 import { MdDirectionsBus, MdSwapHoriz, MdCalendarToday } from 'react-icons/md';
+import { apiUrl } from '../../../config/api';
 
 const BusSearch = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const BusSearch = () => {
   const toInputRef = useRef(null);
   
   useEffect(() => {
-    fetch("http://localhost:5000/api/schedules/cities")
+    fetch(apiUrl('/api/schedules/cities'))
       .then(res => res.json())
       .then(data => setDbCities(data))
       .catch(err => console.error("City fetch error:", err));
@@ -84,9 +85,9 @@ const BusSearch = () => {
     : dbCities;
 
   return (
-    <div className="relative mx-auto flex w-full max-w-[450px] flex-col items-stretch rounded-2xl md:max-w-[600px] lg:max-w-[1000px] lg:flex-row lg:items-center lg:rounded-none">
+    <div className="relative mx-auto flex w-full max-w-[450px] flex-col items-stretch rounded-2xl md:max-w-[600px] lg:max-w-[1000px] lg:flex-row lg:items-center lg:overflow-hidden lg:rounded-full">
       
-      <div ref={fromRef} className="relative flex items-center w-full p-4 border-b border-gray-300 cursor-pointer bg-slate-100 rounded-t-2xl lg:flex-grow lg:border-b-0 lg:border-r lg:p-7 lg:pl-5 lg:rounded-t-none lg:rounded-l-full lg:rounded-r-none">
+      <div ref={fromRef} className="relative flex items-center w-full p-4 border-b border-gray-300 cursor-pointer bg-slate-100 rounded-t-2xl lg:flex-grow lg:border-b-0 lg:border-r lg:p-7 lg:pl-5 lg:rounded-none lg:rounded-l-[9999px]">
         <div className="relative flex items-center w-full">
         <img width="20" height="20" src="https://img.icons8.com/small/50/bus.png" alt="bus" className='flex-shrink-0 mr-2'/>
         <input
@@ -186,7 +187,7 @@ const BusSearch = () => {
       </div>
 
     
-      <button onClick={handleSearch} className="p-4 font-semibold text-white duration-300 bg-gray-500 hover:bg-gray-600 rounded-b-2xl lg:rounded-b-none lg:rounded-r-full lg:p-7">
+      <button onClick={handleSearch} className="p-4 font-semibold text-white duration-300 bg-gray-500 hover:bg-gray-600 rounded-b-2xl lg:rounded-none lg:rounded-r-[9999px] lg:p-7">
         SEARCH
       </button>
     </div>

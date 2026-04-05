@@ -84,6 +84,20 @@ npm start
 
 Web app URL: http://localhost:3000
 
+### 5) Frontend API base URL
+
+Create `client/.env` for local development:
+
+```env
+REACT_APP_API_BASE_URL=http://localhost:5000
+```
+
+In Vercel, add the same key in Project Settings -> Environment Variables:
+
+```env
+REACT_APP_API_BASE_URL=https://ticket-booking-app-h1ws.onrender.com
+```
+
 ## API (Current)
 
 Base path: /api

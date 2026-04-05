@@ -11,12 +11,9 @@ html::-webkit-scrollbar {
   display: none;
 }
 
-html {
-html, body, * {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
+html,
+body,
+* {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
