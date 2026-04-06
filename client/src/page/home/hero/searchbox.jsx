@@ -5,11 +5,20 @@ import { useNavigate } from 'react-router-dom';
 import { MdDirectionsBus, MdSwapHoriz, MdCalendarToday } from 'react-icons/md';
 import { apiUrl } from '../../../config/api';
 
+
 const BusSearch = () => {
   const navigate = useNavigate();
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [date, setDate] = useState(null);
+
+
+  {/* Date constraints to limit date searchingg*/}
+  const minBookingDate = new Date();
+  minBookingDate.setHours(0, 0, 0, 0);
+
+  const maxBookingDate = new Date(minBookingDate);
+  maxBookingDate.setMonth(maxBookingDate.getMonth() + 3);
 
 
   const [dbCities, setDbCities] = useState([]);
@@ -22,12 +31,29 @@ const BusSearch = () => {
   const toInputRef = useRef(null);
   
   useEffect(() => {
-    fetch("http://localhost:5000/api/schedules/cities")
-      .then(res => res.json())
-      .then(data => setDbCities(data))
-      .catch(err => console.error("City fetch error:", err));
+    const loadCities = async () => {
+      try {
+        const res = await fetch(apiUrl("/api/schedules/cities"));
+        if (!res.ok) {
+          throw new Error(`City fetch failed with status ${res.status}`);
+        }
+
+        const data = await res.json();
+        const cities = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.cities)
+            ? data.cities
+            : [];
+
+        setDbCities(cities.filter(Boolean));
+      } catch (err) {
+        console.error("City fetch error:", err);
+        setDbCities([]);
+      }
+    };
+
+    loadCities();
   }, []);
-  
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -52,6 +78,10 @@ const BusSearch = () => {
 
   const handleSearch = () => {
     if (!from || !to || !date) return alert("Select From, To, and Date");
+
+    if (date < minBookingDate || date > maxBookingDate) {
+      return alert("Select a date from today up to 3 months ahead");
+    }
     
     
     const formattedDate = date.toISOString().split('T')[0];
@@ -85,7 +115,7 @@ const BusSearch = () => {
     : dbCities;
 
   return (
-    <div className="relative mx-auto flex w-full max-w-[450px] flex-col items-stretch rounded-2xl md:max-w-[600px] lg:max-w-[1000px] lg:flex-row lg:items-center lg:overflow-hidden lg:rounded-full">
+    <div className="relative mx-auto flex w-full max-w-[450px] flex-col items-stretch rounded-2xl md:max-w-[600px] lg:max-w-[1000px] lg:flex-row lg:items-center lg:overflow-visible lg:rounded-full">
       
       <div ref={fromRef} className="relative flex items-center w-full p-4 border-b border-gray-300 cursor-pointer bg-slate-100 rounded-t-2xl lg:flex-grow lg:border-b-0 lg:border-r lg:p-7 lg:pl-5 lg:rounded-none lg:rounded-l-[9999px]">
         <div className="relative flex items-center w-full">
@@ -113,14 +143,23 @@ const BusSearch = () => {
         )}
         </div>
         {showFromDropdown && (
-          <ul className="absolute left-0 z-50 w-full mt-2 overflow-y-auto top-full bg-slate-100 rounded-xl max-h-60">
-            {filteredFrom.map(city => (
-              <li key={city} className="p-3 pl-5 border-b-2 border-gray-200 cursor-pointer hover:bg-white" 
-                  onClick={() => { setFrom(city); setShowFromDropdown(false); }}>
-                {city}
-              </li>
-            ))}
-          </ul>
+          <div className="absolute left-0 top-full z-[70] mt-2 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+            <ul className="py-1 overflow-y-auto max-h-60">
+              {filteredFrom.length > 0 ? (
+                filteredFrom.map(city => (
+                  <li
+                    key={city}
+                    className="px-4 py-3 text-sm transition-colors cursor-pointer text-slate-700 hover:bg-slate-100"
+                    onClick={() => { setFrom(city); setShowFromDropdown(false); }}
+                  >
+                    {city}
+                  </li>
+                ))
+              ) : (
+                <li className="px-4 py-3 text-sm text-slate-400">No cities found</li>
+              )}
+            </ul>
+          </div>
         )}
 
         {/* Reverse Button */}
@@ -159,14 +198,23 @@ const BusSearch = () => {
           )}
         </div>
         {showToDropdown && (
-          <ul className="absolute left-0 z-50 w-full mt-2 overflow-y-auto top-full bg-slate-100 rounded-xl max-h-60">
-            {filteredTo.map(city => (
-              <li key={city} className="p-3 pl-5 border-b-2 border-gray-200 cursor-pointer hover:bg-white" 
-                  onClick={() => { setTo(city); setShowToDropdown(false); }}>
-                {city}
-              </li>
-            ))}
-          </ul>
+          <div className="absolute left-0 top-full z-[70] mt-2 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+            <ul className="py-1 overflow-y-auto max-h-60">
+              {filteredTo.length > 0 ? (
+                filteredTo.map(city => (
+                  <li
+                    key={city}
+                    className="px-4 py-3 text-sm transition-colors cursor-pointer text-slate-700 hover:bg-slate-100"
+                    onClick={() => { setTo(city); setShowToDropdown(false); }}
+                  >
+                    {city}
+                  </li>
+                ))
+              ) : (
+                <li className="px-4 py-3 text-sm text-slate-400">No cities found</li>
+              )}
+            </ul>
+          </div>
         )}
       </div>
 
@@ -178,6 +226,8 @@ const BusSearch = () => {
         selected={date}
         onChange={handleChange}
         dateFormat="d MMM yyyy"
+        minDate={minBookingDate}
+        maxDate={maxBookingDate}
         wrapperClassName="w-full"
         className="w-full py-2 pl-2 bg-transparent cursor-pointer focus:outline-none caret-transparent placeholder:text-slate-950"
         placeholderText="Date">

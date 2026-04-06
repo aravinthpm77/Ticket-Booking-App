@@ -24,7 +24,7 @@ const Hero =() =>{
             style={{
                 scale,
                 borderRadius,
-                overflow: "hidden" ,
+                overflow: "visible" ,
                 y: yPosition,
             }}
             transition={{
